@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Trang Chủ</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="banner-section mb-5 shadow-sm rounded overflow-hidden">
+    <img src="https://huit.edu.vn/images/slider1.jpg" class="d-block w-100" style="height: 350px; object-fit: cover;" alt="Khuyến mãi">
+  </div>
+
+  <h3 class="fw-bold text-huit mb-4 border-bottom pb-2">SẢN PHẨM MỚI NHẤT</h3>
+
+  <div class="row row-cols-1 row-cols-md-4 g-4">
+    <div class="col" th:each="sp : ${listSanPham}">
+      <div class="card h-100 product-card border-0 shadow-sm">
+        <img th:src="${sp.hinh_anh}" class="card-img-top p-3" alt="Sản phẩm" style="height: 200px; object-fit: contain;">
+        <div class="card-body text-center">
+          <h6 class="card-title fw-bold text-dark" th:text="${sp.ten_sanpham}">Tên sản phẩm</h6>
+          <p class="card-text text-danger fw-bold" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</p>
+          <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="btn btn-outline-huit btn-sm w-100">Xem chi tiết</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

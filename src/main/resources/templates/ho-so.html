@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group shadow-sm">
+                <a th:href="@{/profile}" class="list-group-item list-group-item-action active bg-huit border-huit">Thông tin tài khoản</a>
+                <a th:href="@{/orders}" class="list-group-item list-group-item-action">Lịch sử mua hàng</a>
+                <a th:href="@{/logout}" class="list-group-item list-group-item-action text-danger">Đăng xuất</a>
+            </div>
+        </div>
+        <div class="col-md-9 bg-white p-4 shadow-sm rounded">
+            <h4 class="fw-bold border-bottom pb-3 mb-4">HỒ SƠ CỦA TÔI</h4>
+            <form>
+                <div class="mb-3 row">
+                    <label class="col-sm-3 col-form-label fw-semibold">Họ và tên:</label>
+                    <div class="col-sm-9"><p class="form-control-plaintext" th:text="${user.ho_ten}"></p></div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-3 col-form-label fw-semibold">Email:</label>
+                    <div class="col-sm-9"><p class="form-control-plaintext" th:text="${user.email}"></p></div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-3 col-form-label fw-semibold">Số điện thoại:</label>
+                    <div class="col-sm-9"><p class="form-control-plaintext" th:text="${user.so_dien_thoai}"></p></div>
+                </div>
+                <button type="button" class="btn btn-outline-huit btn-sm">Chỉnh sửa thông tin</button>
+            </form>
+        </div>
+    </div>
+</div>
+</html>

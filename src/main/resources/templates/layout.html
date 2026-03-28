@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="CONTENT_TITLE - HUIT Stationery">HUIT Stationery</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="sticky-top shadow-sm">
+    <div class="top-bar bg-light py-1 border-bottom d-none d-md-block">
+        <div class="container-fluid px-4 d-flex justify-content-end gap-4 small text-muted">
+            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-truck-fast me-1"></i> Tra cứu đơn hàng</a>
+            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-headset me-1"></i> Hỗ trợ khách hàng</a>
+            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-heart me-1"></i> Yêu thích</a>
+        </div>
+    </div>
+
+    <header class="main-header bg-white py-3">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center">
+                <div class="col-lg-2 col-md-3 col-6">
+                    <a href="/" class="d-flex align-items-center text-decoration-none">
+                        <img src="https://huit.edu.vn/logo.png" alt="HUIT Logo" class="logo-img">
+                        <span class="ms-2 fw-bold brand-name text-huit">STATIONERY</span>
+                    </a>
+                </div>
+
+                <div class="col-lg-7 col-md-6 d-none d-md-block">
+                    <form action="/search" method="get" class="search-box">
+                        <div class="input-group">
+                            <input type="text" name="keyword" class="form-control border-huit" placeholder="Hôm nay bạn muốn tìm bút bi, tập vở hay quà tặng?">
+                            <button class="btn btn-huit px-4" type="submit">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-6 d-flex justify-content-end align-items-center gap-4">
+                    <div class="user-account d-none d-lg-block">
+                        <a th:href="@{/login}" class="text-decoration-none text-dark d-flex align-items-center">
+                            <i class="fa-regular fa-circle-user fs-4 me-2"></i>
+                            <span class="small fw-semibold">Tài khoản</span>
+                        </a>
+                    </div>
+                    <a href="/cart" class="cart-icon position-relative text-huit">
+                        <i class="fa-solid fa-cart-shopping fs-4"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
+                                3 <span class="visually-hidden">món hàng</span>
+                            </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-menu bg-huit text-white py-2">
+        <div class="container-fluid px-4">
+            <ul class="nav justify-content-start gap-3">
+                <li class="nav-item"><a class="nav-link text-white active" href="/">TRANG CHỦ</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#">DỤNG CỤ HỌC TẬP</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#">BÚT - VIẾT</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#">TẬP - VỞ</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#">QUÀ TẶNG - ĐỒ CHƠI</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#">SALE OFF</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<main layout:fragment="content" class="fade-in py-4 px-4">
+</main>
+
+<footer class="bg-dark text-light pt-5 pb-3 mt-5">
+    <div class="container-fluid px-5">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="text-huit-light fw-bold mb-4 border-start border-huit ps-2 border-4">HUIT STATIONERY</h5>
+                <p class="small opacity-75">Hệ thống cung cấp văn phòng phẩm hàng đầu cho sinh viên HUIT. Chất lượng, nhanh chóng và tận tâm.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h6 class="fw-bold mb-4">LIÊN HỆ</h6>
+                <ul class="list-unstyled small opacity-75">
+                    <li class="mb-2"><i class="fa-solid fa-location-dot me-2"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</li>
+                    <li class="mb-2"><i class="fa-solid fa-phone me-2"></i> 0961464045</li>
+                    <li><i class="fa-solid fa-envelope me-2"></i> contact@huit-stationery.com</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-bold mb-4">THEO DÕI CHÚNG TÔI</h6>
+                <div class="d-flex gap-3 fs-4">
+                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-5 opacity-25">
+        <p class="text-center small opacity-50 mb-0">© 2026 Designed by Thành Viên 1 - Nhóm Đồ án HUIT</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

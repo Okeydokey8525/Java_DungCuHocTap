@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="content">
+    <h4 class="fw-bold text-huit mb-4">LỊCH SỬ ĐƠN HÀNG</h4>
+    <div class="table-responsive bg-white p-3 shadow-sm rounded">
+        <table class="table table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>Mã Đơn</th>
+                <th>Ngày Đặt</th>
+                <th>Tổng Tiền</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dh : ${listDonHang}">
+                <td class="fw-bold" th:text="${dh.id_donhang}">#101</td>
+                <td th:text="${#dates.format(dh.ngay_dat, 'dd/MM/yyyy HH:mm')}">28/03/2026</td>
+                <td class="text-danger fw-bold" th:text="${#numbers.formatDecimal(dh.tong_tien, 0, 'COMMA', 0, 'POINT') + ' đ'}"></td>
+                <td><span class="badge bg-success" th:text="${dh.trang_thai}">Hoàn thành</span></td>
+                <td><a href="#" class="btn btn-sm btn-outline-primary">Xem chi tiết</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</html>

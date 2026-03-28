@@ -1,0 +1,50 @@
+:root {
+    --huit-blue: #0054a3; /* Màu xanh HUIT chuẩn */
+    --huit-blue-light: #0081f2;
+    --huit-grey: #f8f9fa;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f6f9;
+}
+
+.text-huit { color: var(--huit-blue); }
+.bg-huit { background-color: var(--huit-blue) !important; }
+
+/* Logo */
+.logo-img { height: 50px; width: auto; }
+.brand-name { font-size: 1.4rem; letter-spacing: 1px; }
+
+/* Search Box */
+.border-huit { border: 2px solid var(--huit-blue); }
+.border-huit:focus { border-color: var(--huit-blue-light); box-shadow: none; }
+.btn-huit { background-color: var(--huit-blue); color: white; border-radius: 0 4px 4px 0; }
+.btn-huit:hover { background-color: var(--huit-blue-light); color: white; }
+
+/* Menu */
+.nav-menu .nav-link {
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 10px 15px !important;
+    transition: all 0.3s;
+}
+.nav-menu .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Badge */
+.badge { font-size: 0.65rem; border: 2px solid white; }
+
+/* Animation */
+.fade-in {
+    animation: fadeIn 0.8s ease-in;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer */
+footer a:hover { opacity: 1 !important; color: var(--huit-blue-light) !important; transition: 0.3s; }
