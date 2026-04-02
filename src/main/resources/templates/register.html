@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Đăng ký</title>
 </head>
 <body>
+<div layout:fragment="content" class="container" style="max-width: 620px;">
+    <div class="bg-white shadow-sm rounded p-4">
+        <h4 class="fw-bold text-huit mb-3">TẠO TÀI KHOẢN</h4>
 
+        <div th:if="${error}" class="alert alert-danger py-2" th:text="${error}"></div>
+
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Họ và tên</label>
+                    <input type="text" class="form-control" th:field="*{ho_ten}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" class="form-control" th:field="*{so_dien_thoai}" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-control" th:field="*{mat_khau}" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-huit mt-4 w-100">Đăng ký</button>
+        </form>
+
+        <p class="small mt-3 mb-0">Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a>.</p>
+    </div>
+</div>
 </body>
 </html>
