@@ -25,7 +25,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 // Trong WebSecurityConfig.java
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/san-pham/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/home", "/san-pham/**", "/css/**", "/js/**", "/images/**", "/login", "/register").permitAll()
                         .requestMatchers("/profile/**", "/orders/**", "/checkout/**").authenticated() // Thêm dòng này
                         .anyRequest().authenticated()
                 )
