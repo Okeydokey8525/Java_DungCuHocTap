@@ -1,10 +1,236 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng điều khiển Admin | Văn phòng phẩm HUIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B3C8C',
+                        secondary: '#1E5BB8',
+                        accent: '#4DA3FF',
+                        appBg: '#F5F9FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @reference "tailwindcss";
+        @theme {
+            --color-primary: #0B3C8C;
+            --color-secondary: #1E5BB8;
+            --color-accent: #4DA3FF;
+            --color-app-bg: #F5F9FF;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex bg-app-bg text-slate-800 font-sans">
+<!-- Sidebar -->
+<aside class="w-72 bg-slate-50 border-r border-slate-200 p-6 flex flex-col fixed h-full">
+    <a href="home.html" class="flex items-center gap-2 mb-10 px-2">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+            <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+        </div>
+        <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">HUIT Admin</span>
+    </a>
 
+    <nav class="space-y-2 flex-1">
+        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            Tổng quan
+        </a>
+        <a href="quan-ly-san-pham.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="package" class="w-5 h-5"></i>
+            Quản lý sản phẩm
+        </a>
+        <a href="quan-ly-don-hang.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            Quản lý đơn hàng
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            Khách hàng
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            Báo cáo doanh thu
+        </a>
+    </nav>
+
+    <div class="pt-6 border-t border-slate-200">
+        <a href="home.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all font-medium">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            Thoát Admin
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 ml-72 p-10">
+    <header class="flex justify-between items-center mb-10">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Tổng quan hệ thống</h1>
+            <p class="text-slate-500">Chào mừng trở lại, Admin!</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="p-2 bg-white rounded-xl border border-slate-200 relative">
+                <i data-lucide="bell" class="w-6 h-6 text-slate-600"></i>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
+            <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                <div class="text-right">
+                    <p class="text-sm font-bold text-slate-900">Quản trị viên</p>
+                    <p class="text-xs text-slate-500">admin@huit.edu.vn</p>
+                </div>
+                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                    AD
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center">
+                <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Doanh thu tháng</p>
+                <p class="text-2xl font-bold text-slate-900">45.2M đ</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center">
+                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Đơn hàng mới</p>
+                <p class="text-2xl font-bold text-slate-900">128</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center">
+                <i data-lucide="users" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Khách hàng mới</p>
+                <p class="text-2xl font-bold text-slate-900">42</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 flex items-center gap-4">
+            <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center">
+                <i data-lucide="package" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Sản phẩm sắp hết</p>
+                <p class="text-2xl font-bold text-slate-900">15</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Recent Orders -->
+        <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-slate-900 text-lg">Đơn hàng gần đây</h3>
+                <a href="quan-ly-don-hang.html" class="text-sm font-bold text-primary hover:underline">Xem tất cả</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                    <tr class="text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                        <th class="pb-4">Mã đơn</th>
+                        <th class="pb-4">Khách hàng</th>
+                        <th class="pb-4">Ngày đặt</th>
+                        <th class="pb-4">Tổng tiền</th>
+                        <th class="pb-4">Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                    <tr class="text-sm">
+                        <td class="py-4 font-bold text-primary">#HUIT-88291</td>
+                        <td class="py-4 font-medium text-slate-700">Nguyễn Văn A</td>
+                        <td class="py-4 text-slate-500">08/04/2024</td>
+                        <td class="py-4 font-bold text-slate-900">200.000đ</td>
+                        <td class="py-4">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-[10px] font-bold uppercase">Đang xử lý</span>
+                        </td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="py-4 font-bold text-primary">#HUIT-88290</td>
+                        <td class="py-4 font-medium text-slate-700">Trần Thị B</td>
+                        <td class="py-4 text-slate-500">07/04/2024</td>
+                        <td class="py-4 font-bold text-slate-900">450.000đ</td>
+                        <td class="py-4">
+                            <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-[10px] font-bold uppercase">Đã giao</span>
+                        </td>
+                    </tr>
+                    <tr class="text-sm">
+                        <td class="py-4 font-bold text-primary">#HUIT-88289</td>
+                        <td class="py-4 font-medium text-slate-700">Lê Văn C</td>
+                        <td class="py-4 text-slate-500">07/04/2024</td>
+                        <td class="py-4 font-bold text-slate-900">120.000đ</td>
+                        <td class="py-4">
+                            <span class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold uppercase">Đã hủy</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
+            <h3 class="font-bold text-slate-900 text-lg mb-6">Sản phẩm bán chạy</h3>
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                        <img src="https://images.unsplash.com/photo-1585336139118-132f7f215b2e?auto=format&fit=crop&q=80&w=100" alt="P" class="w-full h-full object-cover" referrerPolicy="no-referrer">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-800 truncate">Bút Bi HUIT Blue</p>
+                        <p class="text-xs text-slate-500">450 lượt bán</p>
+                    </div>
+                    <p class="font-bold text-primary text-sm">25k</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                        <img src="https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&q=80&w=100" alt="P" class="w-full h-full object-cover" referrerPolicy="no-referrer">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-800 truncate">Sổ Tay Lò Xo A5</p>
+                        <p class="text-xs text-slate-500">320 lượt bán</p>
+                    </div>
+                    <p class="font-bold text-primary text-sm">45k</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                        <img src="https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?auto=format&fit=crop&q=80&w=100" alt="P" class="w-full h-full object-cover" referrerPolicy="no-referrer">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-800 truncate">Bộ Màu Nước 24 Màu</p>
+                        <p class="text-xs text-slate-500">180 lượt bán</p>
+                    </div>
+                    <p class="font-bold text-primary text-sm">120k</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

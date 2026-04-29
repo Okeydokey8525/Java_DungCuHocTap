@@ -1,10 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý đơn hàng | Văn phòng phẩm HUIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B3C8C',
+                        secondary: '#1E5BB8',
+                        accent: '#4DA3FF',
+                        appBg: '#F5F9FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @reference "tailwindcss";
+        @theme {
+            --color-primary: #0B3C8C;
+            --color-secondary: #1E5BB8;
+            --color-accent: #4DA3FF;
+            --color-app-bg: #F5F9FF;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex bg-app-bg text-slate-800 font-sans">
+<!-- Sidebar -->
+<aside class="w-72 bg-slate-50 border-r border-slate-200 p-6 flex flex-col fixed h-full">
+    <a href="home.html" class="flex items-center gap-2 mb-10 px-2">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+            <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+        </div>
+        <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">HUIT Admin</span>
+    </a>
 
+    <nav class="space-y-2 flex-1">
+        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            Tổng quan
+        </a>
+        <a href="quan-ly-san-pham.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="package" class="w-5 h-5"></i>
+            Quản lý sản phẩm
+        </a>
+        <a href="quan-ly-don-hang.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            Quản lý đơn hàng
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            Khách hàng
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            Báo cáo doanh thu
+        </a>
+    </nav>
+
+    <div class="pt-6 border-t border-slate-200">
+        <a href="home.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all font-medium">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            Thoát Admin
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 ml-72 p-10">
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Quản lý đơn hàng</h1>
+            <p class="text-slate-500">Theo dõi và cập nhật trạng thái đơn hàng</p>
+        </div>
+        <div class="flex gap-3">
+            <button class="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">
+                <i data-lucide="download" class="w-5 h-5 text-slate-600"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 mb-8">
+        <div class="flex flex-wrap gap-4">
+            <div class="flex-1 relative">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                <input type="text" placeholder="Tìm theo mã đơn, khách hàng..." class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+            </div>
+            <div class="flex gap-2">
+                <button class="px-4 py-2 bg-primary text-white rounded-xl font-bold text-sm">Tất cả</button>
+                <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Chờ xác nhận</button>
+                <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Đang giao</button>
+                <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Đã hoàn thành</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Table -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                <tr class="text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                    <th class="pb-4 px-4">Mã đơn</th>
+                    <th class="pb-4 px-4">Khách hàng</th>
+                    <th class="pb-4 px-4">Ngày đặt</th>
+                    <th class="pb-4 px-4">Tổng tiền</th>
+                    <th class="pb-4 px-4">Thanh toán</th>
+                    <th class="pb-4 px-4">Trạng thái</th>
+                    <th class="pb-4 px-4 text-right">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                <tr class="text-sm group hover:bg-slate-50 transition-colors">
+                    <td class="py-4 px-4 font-bold text-primary">#HUIT-88291</td>
+                    <td class="py-4 px-4">
+                        <p class="font-bold text-slate-900">Nguyễn Văn A</p>
+                        <p class="text-xs text-slate-400">0901 234 567</p>
+                    </td>
+                    <td class="py-4 px-4 text-slate-500">08/04/2024</td>
+                    <td class="py-4 px-4 font-bold text-slate-900">200.000đ</td>
+                    <td class="py-4 px-4 text-slate-600">COD</td>
+                    <td class="py-4 px-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-600">Đang xử lý</span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <a href="chi-tiet-don-hang.html" class="p-2 text-slate-400 hover:text-primary transition-colors inline-block">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="text-sm group hover:bg-slate-50 transition-colors">
+                    <td class="py-4 px-4 font-bold text-primary">#HUIT-88290</td>
+                    <td class="py-4 px-4">
+                        <p class="font-bold text-slate-900">Trần Thị B</p>
+                        <p class="text-xs text-slate-400">0988 777 666</p>
+                    </td>
+                    <td class="py-4 px-4 text-slate-500">07/04/2024</td>
+                    <td class="py-4 px-4 font-bold text-slate-900">450.000đ</td>
+                    <td class="py-4 px-4 text-slate-600">Momo</td>
+                    <td class="py-4 px-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-600">Đang giao</span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <a href="chi-tiet-don-hang.html" class="p-2 text-slate-400 hover:text-primary transition-colors inline-block">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr class="text-sm group hover:bg-slate-50 transition-colors">
+                    <td class="py-4 px-4 font-bold text-primary">#HUIT-88289</td>
+                    <td class="py-4 px-4">
+                        <p class="font-bold text-slate-900">Lê Văn C</p>
+                        <p class="text-xs text-slate-400">0912 345 678</p>
+                    </td>
+                    <td class="py-4 px-4 text-slate-500">07/04/2024</td>
+                    <td class="py-4 px-4 font-bold text-slate-900">120.000đ</td>
+                    <td class="py-4 px-4 text-slate-600">COD</td>
+                    <td class="py-4 px-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-green-100 text-green-600">Đã giao</span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <a href="chi-tiet-don-hang.html" class="p-2 text-slate-400 hover:text-primary transition-colors inline-block">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination -->
+        <div class="p-6 border-t border-slate-50 flex justify-between items-center">
+            <p class="text-sm text-slate-500">Hiển thị 1-10 trên 84 đơn hàng</p>
+            <div class="flex gap-2">
+                <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50" disabled>
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                </button>
+                <button class="px-4 py-2 bg-primary text-white rounded-lg font-bold">1</button>
+                <button class="px-4 py-2 hover:bg-slate-50 rounded-lg font-bold">2</button>
+                <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50">
+                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

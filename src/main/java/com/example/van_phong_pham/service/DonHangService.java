@@ -10,27 +10,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DonHangService {
     @Autowired
     private DonHangRepository donHangRepository;
 
-    // Lưu đơn hàng mới (Thành viên 3 sẽ gọi hàm này)
+    @Autowired
+    private ChiTietDonHangRepository chiTietRepository;
+
+    // Lưu đơn hàng mới
     public DonHang createOrder(DonHang order) {
         return donHangRepository.save(order);
     }
 
-    // Lấy danh sách đơn hàng cho Admin duyệt (Thành viên 4 sẽ dùng)
+    // Lấy danh sách đơn hàng cho Admin duyệt
     public List<DonHang> getAllOrders() {
         return donHangRepository.findAll();
     }
 
-
-    @Autowired
-    private ChiTietDonHangRepository chiTietRepository;
-
-    @Transactional // Đảm bảo nếu lưu lỗi thì sẽ hoàn tác (Rollback)
+    // Lưu đơn hàng và chi tiết đơn hàng (transaction)
+    @Transactional
     public void saveOrder(DonHang donHang, List<ChiTietDonHang> chiTiets) {
         // 1. Lưu đơn hàng trước để lấy ID
         DonHang savedOrder = donHangRepository.save(donHang);
@@ -42,7 +43,57 @@ public class DonHangService {
         }
     }
 
+    // Lấy danh sách đơn hàng của người dùng
     public List<DonHang> getOrdersByUser(NguoiDung user) {
         return donHangRepository.findByNguoiDung(user);
+    }
+
+    // Lấy đơn hàng theo ID
+    public DonHang getOrderById(Integer orderId) {
+        Optional<DonHang> order = donHangRepository.findById(orderId);
+        return order.orElse(null);
+    }
+
+    // Cập nhật đơn hàng
+    public DonHang updateOrder(DonHang order) {
+        return donHangRepository.save(order);
+    }
+
+    // Lấy chi tiết đơn hàng theo ID đơn hàng
+    public List<ChiTietDonHang> getOrderDetails(Integer orderId) {
+        return chiTietRepository.findByDonHangId_donhang(orderId);
+    }
+
+    // Xóa đơn hàng (admin function)
+    @Transactional
+    public void deleteOrder(Integer orderId) {
+        // Xóa chi tiết đơn hàng trước
+        chiTietRepository.deleteByDonHangId_donhang(orderId);
+        // Sau đó xóa đơn hàng
+        donHangRepository.deleteById(orderId);
+    }
+
+    // Cập nhật trạng thái đơn hàng
+    public DonHang updateOrderStatus(Integer orderId, String status) {
+        Optional<DonHang> orderOpt = donHangRepository.findById(orderId);
+        if (orderOpt.isPresent()) {
+            DonHang order = orderOpt.get();
+            order.setTrang_thai(status);
+            return donHangRepository.save(order);
+        }
+        return null;
+    }
+
+    // Đếm số đơn hàng của người dùng
+    public long countOrdersByUser(NguoiDung user) {
+        return donHangRepository.countByNguoiDung(user);
+    }
+
+    // Tính tổng doanh thu của người dùng
+    public Double getTotalRevenueByUser(NguoiDung user) {
+        List<DonHang> orders = donHangRepository.findByNguoiDung(user);
+        return orders.stream()
+                .mapToDouble(DonHang::getTong_tien)
+                .sum();
     }
 }

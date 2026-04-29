@@ -1,112 +1,152 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title layout:title-pattern="CONTENT_TITLE - HUIT Stationery">HUIT Stationery</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Layout | Văn phòng phẩm HUIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B3C8C',
+                        secondary: '#1E5BB8',
+                        accent: '#4DA3FF',
+                        appBg: '#F5F9FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @reference "tailwindcss";
+        @theme {
+            --color-primary: #0B3C8C;
+            --color-secondary: #1E5BB8;
+            --color-accent: #4DA3FF;
+            --color-app-bg: #F5F9FF;
+        }
+        @layer base {
+            body { @apply bg-app-bg text-slate-800 font-sans; }
+        }
+        .nav-link { @apply text-slate-600 hover:text-primary font-medium transition-colors; }
+        .btn-primary { @apply bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 active:scale-95; }
+        .btn-outline { @apply border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-semibold transition-all active:scale-95; }
+        .card { @apply bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300; }
+    </style>
 </head>
 <body>
-
-<div class="sticky-top shadow-sm">
-    <div class="top-bar bg-light py-1 border-bottom d-none d-md-block">
-        <div class="container-fluid px-4 d-flex justify-content-end gap-4 small text-muted">
-            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-truck-fast me-1"></i> Tra cứu đơn hàng</a>
-            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-headset me-1"></i> Hỗ trợ khách hàng</a>
-            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-heart me-1"></i> Yêu thích</a>
+<!-- Navbar -->
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <div class="flex items-center gap-8">
+                <a href="home.html" class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+                        <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">HUIT Stationery</span>
+                </a>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="home.html" class="nav-link text-primary">Trang chủ</a>
+                    <a href="danh-sach-san-pham.html" class="nav-link">Sản phẩm</a>
+                    <a href="#" class="nav-link">Khuyến mãi</a>
+                    <a href="#" class="nav-link">Về chúng tôi</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative hidden sm:block">
+                    <input type="text" placeholder="Tìm kiếm văn phòng phẩm..." class="w-64 pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full focus:ring-2 focus:ring-primary/20 transition-all">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                </div>
+                <a href="gio-hang.html" class="p-2 hover:bg-slate-100 rounded-full relative transition-colors">
+                    <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-600"></i>
+                    <span class="absolute top-0 right-0 w-5 h-5 bg-accent text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">3</span>
+                </a>
+                <a href="login.html" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                    <i data-lucide="user" class="w-6 h-6 text-slate-600"></i>
+                </a>
+            </div>
         </div>
     </div>
+</nav>
 
-    <header class="main-header bg-white py-3">
-        <div class="container-fluid px-4">
-            <div class="row align-items-center">
-                <div class="col-lg-2 col-md-3 col-6">
-                    <a href="/" class="d-flex align-items-center text-decoration-none">
-                        <img src="https://huit.edu.vn/logo.png" alt="HUIT Logo" class="logo-img">
-                        <span class="ms-2 fw-bold brand-name text-huit">STATIONERY</span>
-                    </a>
-                </div>
-
-                <div class="col-lg-7 col-md-6 d-none d-md-block">
-                    <form action="/search" method="get" class="search-box">
-                        <div class="input-group">
-                            <input type="text" name="keyword" class="form-control border-huit" placeholder="Hôm nay bạn muốn tìm bút bi, tập vở hay quà tặng?">
-                            <button class="btn btn-huit px-4" type="submit">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="col-lg-3 col-md-3 col-6 d-flex justify-content-end align-items-center gap-4">
-                    <div class="user-account d-none d-lg-block">
-                        <a th:href="@{/login}" class="text-decoration-none text-dark d-flex align-items-center">
-                            <i class="fa-regular fa-circle-user fs-4 me-2"></i>
-                            <span class="small fw-semibold">Tài khoản</span>
-                        </a>
-                    </div>
-                    <a href="/cart" class="cart-icon position-relative text-huit">
-                        <i class="fa-solid fa-cart-shopping fs-4"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
-                                3 <span class="visually-hidden">món hàng</span>
-                            </span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <nav class="nav-menu bg-huit text-white py-2">
-        <div class="container-fluid px-4">
-            <ul class="nav justify-content-start gap-3">
-                <li class="nav-item"><a class="nav-link text-white active" href="/">TRANG CHỦ</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">DỤNG CỤ HỌC TẬP</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">BÚT - VIẾT</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">TẬP - VỞ</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">QUÀ TẶNG - ĐỒ CHƠI</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">SALE OFF</a></li>
-            </ul>
-        </div>
-    </nav>
-</div>
-
-<main layout:fragment="content" class="fade-in py-4 px-4">
+<!-- Main Content Placeholder -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
+        <p class="text-slate-400 font-medium">Nội dung trang sẽ hiển thị ở đây</p>
+    </div>
 </main>
 
-<footer class="bg-dark text-light pt-5 pb-3 mt-5">
-    <div class="container-fluid px-5">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <h5 class="text-huit-light fw-bold mb-4 border-start border-huit ps-2 border-4">HUIT STATIONERY</h5>
-                <p class="small opacity-75">Hệ thống cung cấp văn phòng phẩm hàng đầu cho sinh viên HUIT. Chất lượng, nhanh chóng và tận tâm.</p>
-            </div>
-            <div class="col-md-4 mb-4">
-                <h6 class="fw-bold mb-4">LIÊN HỆ</h6>
-                <ul class="list-unstyled small opacity-75">
-                    <li class="mb-2"><i class="fa-solid fa-location-dot me-2"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</li>
-                    <li class="mb-2"><i class="fa-solid fa-phone me-2"></i> 0961464045</li>
-                    <li><i class="fa-solid fa-envelope me-2"></i> contact@huit-stationery.com</li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h6 class="fw-bold mb-4">THEO DÕI CHÚNG TÔI</h6>
-                <div class="d-flex gap-3 fs-4">
-                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-youtube"></i></a>
+<!-- Footer -->
+<footer class="bg-slate-900 text-slate-300 pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div class="space-y-6">
+                <a href="home.html" class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                        <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-white">HUIT Stationery</span>
+                </a>
+                <p class="text-slate-400 leading-relaxed">
+                    Nâng tầm trải nghiệm học tập với những sản phẩm văn phòng phẩm tinh tế và chất lượng nhất.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
                 </div>
             </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Sản phẩm</h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="hover:text-primary transition-colors">Bút viết</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Sổ tay & Giấy</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Dụng cụ học tập</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Họa cụ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Hỗ trợ</h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="hover:text-primary transition-colors">Trung tâm trợ giúp</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Chính sách vận chuyển</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Đổi trả & Hoàn tiền</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Bản tin</h4>
+                <p class="text-slate-400 mb-6">Đăng ký để nhận ưu đãi mới nhất từ chúng tôi.</p>
+                <form class="relative">
+                    <input type="email" placeholder="Email của bạn" class="w-full pl-4 pr-12 py-3 bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary transition-all">
+                    <button class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </form>
+            </div>
         </div>
-        <hr class="mt-5 opacity-25">
-        <p class="text-center small opacity-50 mb-0">© 2026 Designed by Thành Viên 1 - Nhóm Đồ án HUIT</p>
+        <div class="pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
+            <p>&copy; 2024 HUIT Stationery. Tất cả quyền được bảo lưu.</p>
+        </div>
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

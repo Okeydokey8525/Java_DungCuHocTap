@@ -1,10 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm | Văn phòng phẩm HUIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B3C8C',
+                        secondary: '#1E5BB8',
+                        accent: '#4DA3FF',
+                        appBg: '#F5F9FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @reference "tailwindcss";
+        @theme {
+            --color-primary: #0B3C8C;
+            --color-secondary: #1E5BB8;
+            --color-accent: #4DA3FF;
+            --color-app-bg: #F5F9FF;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex bg-app-bg text-slate-800 font-sans">
+<!-- Sidebar -->
+<aside class="w-72 bg-slate-50 border-r border-slate-200 p-6 flex flex-col fixed h-full">
+    <a href="home.html" class="flex items-center gap-2 mb-10 px-2">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+            <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+        </div>
+        <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">HUIT Admin</span>
+    </a>
 
+    <nav class="space-y-2 flex-1">
+        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            Tổng quan
+        </a>
+        <a href="quan-ly-san-pham.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all">
+            <i data-lucide="package" class="w-5 h-5"></i>
+            Quản lý sản phẩm
+        </a>
+        <a href="quan-ly-don-hang.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            Quản lý đơn hàng
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            Khách hàng
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            Báo cáo doanh thu
+        </a>
+    </nav>
+
+    <div class="pt-6 border-t border-slate-200">
+        <a href="home.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all font-medium">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            Thoát Admin
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 ml-72 p-10">
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-900">Quản lý sản phẩm</h1>
+            <p class="text-slate-500">Danh sách tất cả sản phẩm trong kho</p>
+        </div>
+        <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 active:scale-95">
+            <i data-lucide="plus" class="w-5 h-5"></i>
+            Thêm sản phẩm mới
+        </button>
+    </header>
+
+    <!-- Filters & Search -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 mb-8">
+        <div class="flex flex-wrap gap-4">
+            <div class="flex-1 relative">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                <input type="text" placeholder="Tìm kiếm sản phẩm theo tên, mã..." class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+            </div>
+            <select class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all text-slate-600">
+                <option value="">Tất cả danh mục</option>
+                <option value="">Bút viết</option>
+                <option value="">Sổ tay</option>
+                <option value="">Máy tính</option>
+            </select>
+            <select class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all text-slate-600">
+                <option value="">Trạng thái: Tất cả</option>
+                <option value="">Còn hàng</option>
+                <option value="">Sắp hết</option>
+                <option value="">Hết hàng</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Product Table -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                <tr class="text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                    <th class="pb-4 px-4">Sản phẩm</th>
+                    <th class="pb-4 px-4">Danh mục</th>
+                    <th class="pb-4 px-4">Giá bán</th>
+                    <th class="pb-4 px-4">Tồn kho</th>
+                    <th class="pb-4 px-4">Trạng thái</th>
+                    <th class="pb-4 px-4 text-right">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                <!-- Product Row -->
+                <tr class="text-sm group hover:bg-slate-50 transition-colors">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                                <img src="https://images.unsplash.com/photo-1585336139118-132f7f215b2e?auto=format&fit=crop&q=80&w=100" alt="P" class="w-full h-full object-cover" referrerPolicy="no-referrer">
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900">Bút Bi HUIT Blue</p>
+                                <p class="text-xs text-slate-400">SKU: TL-001</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-slate-600">Bút viết</td>
+                    <td class="py-4 px-4 font-bold text-slate-900">25.000đ</td>
+                    <td class="py-4 px-4 text-slate-600">1,240</td>
+                    <td class="py-4 px-4">
+                        <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-[10px] font-bold uppercase">Còn hàng</span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <button class="p-2 text-slate-400 hover:text-primary transition-colors">
+                                <i data-lucide="edit-3" class="w-5 h-5"></i>
+                            </button>
+                            <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="text-sm group hover:bg-slate-50 transition-colors">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                                <img src="https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&q=80&w=100" alt="P" class="w-full h-full object-cover" referrerPolicy="no-referrer">
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900">Sổ Tay Lò Xo A5</p>
+                                <p class="text-xs text-slate-400">SKU: ST-042</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-slate-600">Sổ tay</td>
+                    <td class="py-4 px-4 font-bold text-slate-900">45.000đ</td>
+                    <td class="py-4 px-4 text-slate-600">8</td>
+                    <td class="py-4 px-4">
+                        <span class="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-[10px] font-bold uppercase">Sắp hết</span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <button class="p-2 text-slate-400 hover:text-primary transition-colors">
+                                <i data-lucide="edit-3" class="w-5 h-5"></i>
+                            </button>
+                            <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="text-sm group hover:bg-slate-50 transition-colors">
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                                <img src="https://images.unsplash.com/photo-1586075010633-2442dc3d875f?auto=format&fit=crop&q=80&w=100" alt="P" class="w-full h-full object-cover" referrerPolicy="no-referrer">
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900">Kéo Thủ Công</p>
+                                <p class="text-xs text-slate-400">SKU: DC-015</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-slate-600">Dụng cụ cắt</td>
+                    <td class="py-4 px-4 font-bold text-slate-900">15.000đ</td>
+                    <td class="py-4 px-4 text-slate-600">0</td>
+                    <td class="py-4 px-4">
+                        <span class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold uppercase">Hết hàng</span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <button class="p-2 text-slate-400 hover:text-primary transition-colors">
+                                <i data-lucide="edit-3" class="w-5 h-5"></i>
+                            </button>
+                            <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination -->
+        <div class="p-6 border-t border-slate-50 flex justify-between items-center">
+            <p class="text-sm text-slate-500">Hiển thị 1-10 trên 156 sản phẩm</p>
+            <div class="flex gap-2">
+                <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50" disabled>
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                </button>
+                <button class="px-4 py-2 bg-primary text-white rounded-lg font-bold">1</button>
+                <button class="px-4 py-2 hover:bg-slate-50 rounded-lg font-bold">2</button>
+                <button class="px-4 py-2 hover:bg-slate-50 rounded-lg font-bold">3</button>
+                <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50">
+                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>
