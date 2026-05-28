@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout :: head('Thanh toán')"></head>
-<body th:replace="layout :: layout(~{::section})">
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Thanh toán', ~{::div#checkout-content})}">
+<body>
+<div id="checkout-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Success/Error Messages -->
     <div th:if="${error}" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
         <div class="flex items-center gap-3">
@@ -10,11 +10,23 @@
             <p class="text-red-700 font-medium" th:text="${error}"></p>
         </div>
     </div>
+    <div th:if="${success}" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+        <div class="flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+            <p class="text-green-700 font-medium" th:text="${success}"></p>
+        </div>
+    </div>
 
     <div class="grid lg:grid-cols-3 gap-12">
         <!-- Checkout Form -->
         <div class="lg:col-span-2 space-y-8">
             <form id="checkoutForm" th:action="@{/checkout/confirm}" method="post">
+                <!-- Trường ẩn lưu mã giảm giá đã áp dụng thành công -->
+                <input type="hidden" id="appliedDiscountCode" name="discountCode" value="">
+                
+                <!-- Lưu danh sách các sản phẩm thanh toán -->
+                <input type="hidden" name="items" th:each="item : ${cartItems}" th:value="${item.sanPham.id_sanpham}">
+
                 <section class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6 mb-8">
                     <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-3">
                         <i data-lucide="map-pin" class="text-primary"></i>
@@ -23,11 +35,11 @@
                     <div class="grid sm:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Họ và tên</label>
-                            <input type="text" th:value="${user.ho_ten}" placeholder="Nguyễn Văn A" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all">
+                            <input type="text" th:value="${user.ho_ten}" readonly class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl outline-none text-slate-600">
                         </div>
                         <div class="space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Số điện thoại</label>
-                            <input type="tel" th:value="${user.so_dien_thoai}" name="so_dien_thoai" placeholder="0901 234 567" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all">
+                            <input type="tel" th:value="${user.so_dien_thoai}" name="so_dien_thoai" placeholder="Nhập số điện thoại nhận hàng..." required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all">
                         </div>
                         <div class="sm:col-span-2 space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Email</label>
@@ -35,7 +47,7 @@
                         </div>
                         <div class="sm:col-span-2 space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Địa chỉ nhận hàng</label>
-                            <textarea name="diaChiGiaoHang" placeholder="Số nhà, tên đường, phường/xã..." rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"></textarea>
+                            <textarea name="diaChiGiaoHang" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..." required rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all" th:text="${user.dia_chi}"></textarea>
                         </div>
                         <div class="sm:col-span-2 space-y-2">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Ghi chú (tùy chọn)</label>
@@ -50,23 +62,27 @@
                         Phương thức thanh toán
                     </h2>
                     <div class="space-y-4">
-                        <label class="flex items-center gap-4 p-4 border border-primary bg-primary/5 rounded-xl cursor-pointer hover:bg-slate-50 transition-all">
-                            <input type="radio" name="phuongThucThanhToan" value="cod" checked class="hidden">
-                            <div class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
+                        <!-- COD Option -->
+                        <label class="flex items-center gap-4 p-4 border border-primary bg-primary/5 rounded-xl cursor-pointer hover:bg-slate-50 transition-all payment-method-option" id="payment-cod">
+                            <input type="radio" name="phuongThucThanhToan" value="cod" checked class="hidden" onclick="selectPaymentMethod('cod')">
+                            <div class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center method-check-indicator">
                                 <div class="w-3 h-3 bg-primary rounded-full"></div>
                             </div>
                             <div class="flex-1">
                                 <div class="font-bold text-slate-900">Thanh toán khi nhận hàng (COD)</div>
-                                <div class="text-xs text-slate-500">Thanh toán bằng tiền mặt khi nhận hàng</div>
+                                <div class="text-xs text-slate-500">Thanh toán bằng tiền mặt khi giao hàng tận nơi.</div>
                             </div>
                             <i data-lucide="banknote" class="w-6 h-6 text-slate-400"></i>
                         </label>
-                        <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-all">
-                            <input type="radio" name="phuongThucThanhToan" value="banking" class="hidden">
-                            <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center"></div>
+                        <!-- Banking Option -->
+                        <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-all payment-method-option" id="payment-banking">
+                            <input type="radio" name="phuongThucThanhToan" value="banking" class="hidden" onclick="selectPaymentMethod('banking')">
+                            <div class="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center method-check-indicator">
+                                <div class="w-3 h-3 bg-primary rounded-full hidden"></div>
+                            </div>
                             <div class="flex-1">
                                 <div class="font-bold text-slate-900">Chuyển khoản ngân hàng</div>
-                                <div class="text-xs text-slate-500">Chuyển khoản qua ứng dụng ngân hàng hoặc MoMo</div>
+                                <div class="text-xs text-slate-500">Chuyển khoản online qua ứng dụng ngân hàng hoặc mã QR.</div>
                             </div>
                             <i data-lucide="landmark" class="w-6 h-6 text-slate-400"></i>
                         </label>
@@ -88,26 +104,43 @@
                             <div class="text-sm font-bold text-slate-900 truncate" th:text="${item.sanPham.ten_sanpham}">Tên sản phẩm</div>
                             <div class="text-xs text-slate-500" th:text="'x' + ${item.so_luong}">x1</div>
                         </div>
-                        <div class="text-sm font-bold text-slate-900" th:text="${#numbers.formatDecimal(item.sanPham.gia * item.so_luong, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</div>
+                        <div class="text-sm font-bold text-slate-900" 
+                             th:text="${#numbers.formatDecimal((item.sanPham.gia_giam != null ? item.sanPham.gia_giam : item.sanPham.gia) * item.so_luong, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</div>
                     </div>
                     <div th:if="${cartItems == null or cartItems.isEmpty()}" class="text-center text-slate-500 py-8">
                         Giỏ hàng trống
                     </div>
                 </div>
-                <div class="pt-6 border-t border-slate-100 space-y-3">
+
+                <!-- Nhập mã giảm giá -->
+                <div class="border-t border-slate-100 pt-6 space-y-3">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Mã giảm giá</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="discountInput" placeholder="Nhập mã ưu đãi..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none">
+                        <button type="button" onclick="applyCoupon()" class="px-4 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors">Áp dụng</button>
+                    </div>
+                </div>
+
+                <!-- Chi phí chi tiết -->
+                <div class="pt-6 border-t border-slate-100 space-y-3 font-medium">
                     <div class="flex justify-between text-sm text-slate-500">
                         <span>Tạm tính</span>
-                        <span class="text-slate-900" th:text="${#numbers.formatDecimal(cartTotal, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</span>
+                        <span class="text-slate-900" id="checkout-subtotal" th:data-subtotal="${cartTotal}" th:text="${#numbers.formatDecimal(cartTotal, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</span>
                     </div>
                     <div class="flex justify-between text-sm text-slate-500">
                         <span>Phí vận chuyển</span>
-                        <span class="text-slate-900" th:text="${cartTotal >= 1000000 ? 'Miễn phí' : #numbers.formatDecimal(30000, 0, 'COMMA', 0, 'POINT') + ' đ'}">Miễn phí</span>
+                        <span class="text-slate-900" id="checkout-shipping">0đ</span>
                     </div>
-                    <div class="flex justify-between text-lg font-black text-primary pt-2">
+                    <div class="flex justify-between text-sm text-green-600 hidden" id="discount-row">
+                        <span>Giảm giá</span>
+                        <span id="checkout-discount">-0đ</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-black text-primary pt-2 border-t border-slate-50">
                         <span>Tổng cộng</span>
-                        <span th:text="${#numbers.formatDecimal(cartTotal, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</span>
+                        <span id="checkout-total">0đ</span>
                     </div>
                 </div>
+
                 <button type="submit" form="checkoutForm" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-primary/20 active:scale-95 flex items-center justify-center gap-2 w-full py-4 text-lg">
                     <i data-lucide="shopping-bag" class="w-5 h-5"></i>
                     Đặt hàng ngay
@@ -118,6 +151,118 @@
             </div>
         </div>
     </div>
-</section>
+
+    <script th:inline="javascript">
+        // Phí ship:
+        // Đơn < 500k -> 30k
+        // Đơn < 1tr -> 20k
+        // Đơn >= 1tr -> free
+        const subtotal = parseFloat(document.getElementById('checkout-subtotal').dataset.subtotal);
+        let shippingFee = 0;
+        if (subtotal < 500000) {
+            shippingFee = 30000;
+        } else if (subtotal < 1000000) {
+            shippingFee = 20000;
+        }
+
+        let discountAmount = 0;
+
+        function updateCheckoutSummary() {
+            document.getElementById('checkout-shipping').textContent = shippingFee === 0 ? 'Miễn phí' : formatCurrency(shippingFee);
+            
+            const discountRow = document.getElementById('discount-row');
+            if (discountAmount > 0) {
+                discountRow.classList.remove('hidden');
+                document.getElementById('checkout-discount').textContent = '-' + formatCurrency(discountAmount);
+            } else {
+                discountRow.classList.add('hidden');
+            }
+
+            const total = subtotal + shippingFee - discountAmount;
+            document.getElementById('checkout-total').textContent = formatCurrency(total);
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
+        }
+
+        // Chọn phương thức thanh toán UI
+        function selectPaymentMethod(method) {
+            // Reset borders and indicators
+            document.querySelectorAll('.payment-method-option').forEach(el => {
+                el.classList.remove('border-primary', 'bg-primary/5');
+                el.classList.add('border-slate-200');
+                el.querySelector('.method-check-indicator').classList.remove('border-primary');
+                el.querySelector('.method-check-indicator').classList.add('border-slate-200');
+                el.querySelector('.method-check-indicator div').classList.add('hidden');
+            });
+
+            // Select active
+            const activeLabel = document.getElementById('payment-' + method);
+            if (activeLabel) {
+                activeLabel.classList.remove('border-slate-200');
+                activeLabel.classList.add('border-primary', 'bg-primary/5');
+                activeLabel.querySelector('.method-check-indicator').classList.remove('border-slate-200');
+                activeLabel.querySelector('.method-check-indicator').classList.add('border-primary');
+                activeLabel.querySelector('.method-check-indicator div').classList.remove('hidden');
+                
+                // Tick radio button
+                activeLabel.querySelector('input[type="radio"]').checked = true;
+            }
+        }
+
+        // Áp dụng mã giảm giá AJAX
+        function applyCoupon() {
+            const codeInput = document.getElementById('discountInput');
+            const code = codeInput.value.trim();
+            if (!code) {
+                if (typeof showToast === 'function') {
+                    showToast('Vui lòng nhập mã giảm giá', 'error');
+                }
+                return;
+            }
+
+            fetch('/checkout/discount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `discountCode=${code}&cartTotal=${subtotal}`
+            })
+            .then(res => res.text())
+            .then(amountStr => {
+                const amount = parseFloat(amountStr);
+                if (amount > 0) {
+                    discountAmount = amount;
+                    document.getElementById('appliedDiscountCode').value = code;
+                    updateCheckoutSummary();
+                    if (typeof showToast === 'function') {
+                        showToast(`Áp dụng mã giảm giá thành công: -${formatCurrency(amount)}`, 'success');
+                    }
+                } else {
+                    discountAmount = 0;
+                    document.getElementById('appliedDiscountCode').value = '';
+                    updateCheckoutSummary();
+                    if (typeof showToast === 'function') {
+                        showToast('Mã giảm giá không hợp lệ hoặc đã hết hạn/hết số lượng', 'error');
+                    }
+                }
+            })
+            .catch(() => {
+                discountAmount = 0;
+                document.getElementById('appliedDiscountCode').value = '';
+                updateCheckoutSummary();
+                if (typeof showToast === 'function') {
+                    showToast('Lỗi khi áp dụng mã giảm giá', 'error');
+                }
+            });
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCheckoutSummary();
+        });
+    </script>
+</div>
 </body>
 </html>

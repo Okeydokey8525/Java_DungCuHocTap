@@ -22,10 +22,12 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Không tìm thấy người dùng với email: " + email);
         }
 
-        // Chuyển đổi NguoiDung của bạn thành UserDetails của Spring Security
+        boolean enabled = user.getTrang_thai() != null ? user.getTrang_thai() : true;
+
         return User.withUsername(user.getEmail())
                 .password(user.getMat_khau())
-                .roles(user.getVaiTro().getTen_vaitro()) // Ví dụ: ADMIN hoặc USER
+                .disabled(!enabled)
+                .authorities(user.getVaiTro() != null ? user.getVaiTro().getTen_vaitro() : "ROLE_USER")
                 .build();
     }
 }

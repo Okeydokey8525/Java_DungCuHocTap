@@ -1,8 +1,8 @@
 package com.example.van_phong_pham.model;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "NguoiDung")
@@ -21,6 +21,15 @@ public class NguoiDung {
     private String mat_khau;
 
     private String so_dien_thoai;
+
+    @Column(columnDefinition = "NVARCHAR(500)")
+    private String dia_chi;
+
+    @Column(columnDefinition = "BIT DEFAULT 1")
+    private Boolean trang_thai = true;
+
+    @Column(name = "ngay_tao", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime ngayTao = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "id_vaitro") // Liên kết với bảng VaiTro

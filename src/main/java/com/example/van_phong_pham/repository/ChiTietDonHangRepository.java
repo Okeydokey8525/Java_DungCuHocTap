@@ -13,7 +13,8 @@ import java.util.List;
 public interface ChiTietDonHangRepository extends JpaRepository<ChiTietDonHang, Integer> {
     
     // Lấy danh sách chi tiết đơn hàng theo ID đơn hàng
-    List<ChiTietDonHang> findByDonHangId_donhang(Integer id_donhang);
+    @Query("SELECT ct FROM ChiTietDonHang ct WHERE ct.donHang.id_donhang = :id_donhang")
+    List<ChiTietDonHang> findByDonHangId_donhang(@Param("id_donhang") Integer id_donhang);
     
     // Xóa chi tiết đơn hàng theo ID đơn hàng
     @Modifying
@@ -21,5 +22,6 @@ public interface ChiTietDonHangRepository extends JpaRepository<ChiTietDonHang, 
     void deleteByDonHangId_donhang(@Param("id_donhang") Integer id_donhang);
     
     // Lấy chi tiết đơn hàng theo ID đơn hàng và ID sản phẩm
-    ChiTietDonHang findByDonHangId_donhangAndSanPhamId_sanpham(Integer id_donhang, Integer id_sanpham);
+    @Query("SELECT ct FROM ChiTietDonHang ct WHERE ct.donHang.id_donhang = :id_donhang AND ct.sanPham.id_sanpham = :id_sanpham")
+    ChiTietDonHang findByDonHangId_donhangAndSanPhamId_sanpham(@Param("id_donhang") Integer id_donhang, @Param("id_sanpham") Integer id_sanpham);
 }

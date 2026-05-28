@@ -35,16 +35,23 @@ public class GioHangService {
 
         // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
         Optional<GioHang> existingItem = gioHangRepository.findByNguoiDungAndSanPham(nguoiDung, sanPham);
+        int addedQty = soLuong != null ? soLuong : 1;
+        int currentQtyInCart = existingItem.isPresent() ? existingItem.get().getSo_luong() : 0;
+        int totalTargetQty = currentQtyInCart + addedQty;
+
+        if (sanPham.getSo_luong() != null && totalTargetQty > sanPham.getSo_luong()) {
+            throw new RuntimeException("Số lượng trong giỏ hàng (" + totalTargetQty + ") vượt quá số lượng tồn kho hiện có (" + sanPham.getSo_luong() + ")");
+        }
 
         if (existingItem.isPresent()) {
             // Nếu đã có, tăng số lượng
             GioHang cartItem = existingItem.get();
-            cartItem.setSo_luong(cartItem.getSo_luong() + (soLuong != null ? soLuong : 1));
+            cartItem.setSo_luong(totalTargetQty);
             cartItem.setNgayCapNhat(LocalDateTime.now());
             return gioHangRepository.save(cartItem);
         } else {
             // Nếu chưa có, tạo mới
-            GioHang cartItem = new GioHang(nguoiDung, sanPham, soLuong != null ? soLuong : 1);
+            GioHang cartItem = new GioHang(nguoiDung, sanPham, totalTargetQty);
             return gioHangRepository.save(cartItem);
         }
     }
@@ -67,6 +74,9 @@ public class GioHangService {
             gioHangRepository.delete(item);
             return null;
         } else {
+            if (sanPham.getSo_luong() != null && soLuong > sanPham.getSo_luong()) {
+                throw new RuntimeException("Số lượng yêu cầu (" + soLuong + ") vượt quá số lượng tồn kho hiện có (" + sanPham.getSo_luong() + ")");
+            }
             // Cập nhật số lượng
             item.setSo_luong(soLuong);
             item.setNgayCapNhat(LocalDateTime.now());
@@ -101,7 +111,13 @@ public class GioHangService {
     public Double getCartTotal(NguoiDung nguoiDung) {
         List<GioHang> cartItems = getCartItems(nguoiDung);
         return cartItems.stream()
-                .mapToDouble(item -> item.getSanPham().getGia() * item.getSo_luong())
+                .mapToDouble(item -> {
+                    Double price = item.getSanPham().getGia();
+                    if (item.getSanPham().getGia_giam() != null) {
+                        price = item.getSanPham().getGia_giam();
+                    }
+                    return price * item.getSo_luong();
+                })
                 .sum();
     }
 

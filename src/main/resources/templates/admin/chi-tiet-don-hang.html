@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout-admin :: layout('Chi tiết đơn hàng #' + ${order.id_donhang}, ~{::div#order-detail-content})}">
+<body>
+<div id="order-detail-content" class="space-y-6">
+    <div class="flex items-center gap-3 mb-4">
+        <a th:href="@{/admin/don-hang}" class="p-2 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all shadow-sm">
+            <i data-lucide="arrow-left" class="w-5 h-5 text-slate-600"></i>
+        </a>
+        <h2 class="text-xl font-bold text-slate-800" th:text="'Đơn hàng #' + ${order.id_donhang}">Chi tiết đơn hàng</h2>
+    </div>
+
+    <!-- Messages -->
+    <div th:if="${success}" class="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${error}"></span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Cột trái: Thông tin sản phẩm mua và tổng tiền -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
+                <h3 class="font-bold text-slate-900 text-lg mb-6">Sản phẩm trong đơn hàng</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                        <tr class="text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                            <th class="pb-4 px-4">Sản phẩm</th>
+                            <th class="pb-4 px-4">Đơn giá</th>
+                            <th class="pb-4 px-4">Số lượng</th>
+                            <th class="pb-4 px-4 text-right">Thành tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                        <tr th:each="detail : ${orderDetails}" class="text-sm group">
+                            <!-- Ảnh + Tên -->
+                            <td class="py-4 px-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-100">
+                                        <img th:src="${detail.sanPham.hinh_anh != null ? detail.sanPham.hinh_anh : '/images/default-product.jpg'}" alt="Image" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-900" th:text="${detail.sanPham.ten_sanpham}">Tên</p>
+                                        <p class="text-xs text-slate-400" th:text="'Mã SP: ' + ${detail.sanPham.id_sanpham}">Mã</p>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <!-- Đơn giá -->
+                            <td class="py-4 px-4 font-medium text-slate-700" th:text="${#numbers.formatDecimal(detail.don_gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</td>
+                            
+                            <!-- Số lượng -->
+                            <td class="py-4 px-4 text-slate-600 font-bold" th:text="${detail.so_luong}">1</td>
+                            
+                            <!-- Thành tiền -->
+                            <td class="py-4 px-4 text-right font-bold text-slate-900" th:text="${#numbers.formatDecimal(detail.thanh_tien, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tóm tắt chi phí -->
+                <div class="border-t border-slate-100 mt-6 pt-6 space-y-3 max-w-md ml-auto text-sm">
+                    <div class="flex justify-between text-slate-500 font-medium">
+                        <span>Phí vận chuyển:</span>
+                        <span th:text="${#numbers.formatDecimal(order.phi_van_chuyen, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                    </div>
+                    <div class="flex justify-between text-slate-900 font-bold text-base pt-2 border-t border-slate-50">
+                        <span>Tổng tiền thanh toán:</span>
+                        <span class="text-primary text-lg" th:text="${#numbers.formatDecimal(order.tong_tien, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Thông tin giao hàng và Cập nhật trạng thái -->
+        <div class="space-y-6">
+            <!-- Thông tin khách hàng & giao hàng -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
+                <h3 class="font-bold text-slate-900 text-lg mb-6">Thông tin giao hàng</h3>
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <p class="text-xs text-slate-400 font-bold uppercase">Khách hàng</p>
+                        <p class="font-bold text-slate-800 mt-1" th:text="${order.nguoiDung.ho_ten}">Họ tên</p>
+                        <p class="text-slate-500" th:text="${order.nguoiDung.email}">Email</p>
+                        <p class="text-slate-500" th:text="${order.nguoiDung.so_dien_thoai}">SĐT</p>
+                    </div>
+                    <div class="border-t border-slate-50 pt-3">
+                        <p class="text-xs text-slate-400 font-bold uppercase">Địa chỉ giao hàng</p>
+                        <p class="text-slate-700 font-semibold mt-1" th:text="${order.diaChiGiaoHang}">Địa chỉ</p>
+                    </div>
+                    <div class="border-t border-slate-50 pt-3" th:if="${order.ghi_chu != null && order.ghi_chu != ''}">
+                        <p class="text-xs text-slate-400 font-bold uppercase">Ghi chú khách hàng</p>
+                        <p class="text-slate-600 italic mt-1" th:text="${order.ghi_chu}">Ghi chú</p>
+                    </div>
+                    <div class="border-t border-slate-50 pt-3">
+                        <p class="text-xs text-slate-400 font-bold uppercase">Thanh toán</p>
+                        <p class="text-slate-700 font-bold mt-1" th:text="${order.phuongThucThanhToan}">COD</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cập nhật trạng thái -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
+                <h3 class="font-bold text-slate-900 text-lg mb-4">Trạng thái đơn hàng</h3>
+                <div class="mb-6">
+                    <span th:text="${order.trang_thai}"
+                          th:class="${order.trang_thai == 'Chờ xác nhận' ? 'w-full text-center block px-4 py-2 bg-amber-500/10 text-amber-600 rounded-xl font-bold uppercase text-sm' : 
+                                     (order.trang_thai == 'Đã xác nhận' ? 'w-full text-center block px-4 py-2 bg-blue-500/10 text-blue-600 rounded-xl font-bold uppercase text-sm' : 
+                                     (order.trang_thai == 'Đang giao' ? 'w-full text-center block px-4 py-2 bg-indigo-500/10 text-indigo-600 rounded-xl font-bold uppercase text-sm' : 
+                                     (order.trang_thai == 'Hoàn thành' ? 'w-full text-center block px-4 py-2 bg-green-500/10 text-green-600 rounded-xl font-bold uppercase text-sm' : 
+                                     'w-full text-center block px-4 py-2 bg-red-500/10 text-red-600 rounded-xl font-bold uppercase text-sm')))}">
+                        Trạng thái
+                    </span>
+                </div>
+                
+                <form th:action="@{/admin/don-hang/update-status}" method="POST" class="space-y-3">
+                    <input type="hidden" name="orderId" th:value="${order.id_donhang}">
+                    
+                    <div th:if="${order.trang_thai == 'Chờ xác nhận'}" class="space-y-3">
+                        <button type="submit" name="status" value="Đã xác nhận" 
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all active:scale-95 text-sm shadow-md shadow-blue-600/20">
+                            Xác nhận đơn hàng
+                        </button>
+                        <button type="submit" name="status" value="Đã hủy" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')"
+                                class="w-full bg-red-100 hover:bg-red-200 text-red-600 py-3 rounded-xl font-bold transition-all active:scale-95 text-sm">
+                            Hủy đơn hàng
+                        </button>
+                    </div>
+
+                    <div th:if="${order.trang_thai == 'Đã xác nhận'}" class="space-y-3">
+                        <button type="submit" name="status" value="Đang giao" 
+                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold transition-all active:scale-95 text-sm shadow-md shadow-indigo-600/20">
+                            Bắt đầu giao hàng
+                        </button>
+                        <button type="submit" name="status" value="Đã hủy" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')"
+                                class="w-full bg-red-100 hover:bg-red-200 text-red-600 py-3 rounded-xl font-bold transition-all active:scale-95 text-sm">
+                            Hủy đơn hàng
+                        </button>
+                    </div>
+
+                    <div th:if="${order.trang_thai == 'Đang giao'}" class="space-y-3">
+                        <button type="submit" name="status" value="Hoàn thành" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold transition-all active:scale-95 text-sm shadow-md shadow-green-600/20">
+                            Hoàn thành đơn hàng
+                        </button>
+                    </div>
+
+                    <div th:if="${order.trang_thai == 'Hoàn thành' || order.trang_thai == 'Đã hủy'}">
+                        <p class="text-slate-400 italic text-center text-xs">Đơn hàng đã đóng. Không thể cập nhật trạng thái thêm.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

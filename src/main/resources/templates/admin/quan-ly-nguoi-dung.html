@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout-admin :: layout('Quản lý người dùng', ~{::div#user-content})}">
+<body>
+<div id="user-content" class="space-y-6">
+    <!-- Messages -->
+    <div th:if="${success}" class="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${error}"></span>
+    </div>
+
+    <!-- User Table Card -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 overflow-hidden">
+        <h3 class="font-bold text-slate-900 text-lg mb-6">Tài khoản khách hàng & quản trị</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                <tr class="text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                    <th class="pb-4 px-4">Họ tên</th>
+                    <th class="pb-4 px-4">Email / SĐT</th>
+                    <th class="pb-4 px-4">Địa chỉ</th>
+                    <th class="pb-4 px-4">Vai trò</th>
+                    <th class="pb-4 px-4">Ngày tham gia</th>
+                    <th class="pb-4 px-4">Trạng thái</th>
+                    <th class="pb-4 px-4 text-right">Khóa / Mở khóa</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                <tr th:each="u : ${users}" class="text-sm group hover:bg-slate-50 transition-colors">
+                    <!-- Họ tên -->
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary/10 text-primary font-bold rounded-xl flex items-center justify-center" 
+                                 th:text="${#strings.substring(u.ho_ten != null ? u.ho_ten : 'U', 0, 1)}">U</div>
+                            <div>
+                                <p class="font-bold text-slate-900" th:text="${u.ho_ten}">Họ tên</p>
+                                <p class="text-xs text-slate-400" th:text="'ID: ND-' + ${u.id_nguoidung}">Mã</p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Email & SĐT -->
+                    <td class="py-4 px-4">
+                        <p class="font-medium text-slate-700" th:text="${u.email}">Email</p>
+                        <p class="text-xs text-slate-400" th:text="${u.so_dien_thoai != null && u.so_dien_thoai != '' ? u.so_dien_thoai : 'Chưa cập nhật'}">SĐT</p>
+                    </td>
+
+                    <!-- Địa chỉ -->
+                    <td class="py-4 px-4 text-slate-500 max-w-[200px] truncate" th:text="${u.dia_chi != null && u.dia_chi != '' ? u.dia_chi : 'Chưa cập nhật'}">Địa chỉ</td>
+
+                    <!-- Vai trò -->
+                    <td class="py-4 px-4">
+                        <span th:text="${u.vaiTro != null ? u.vaiTro.ten_vaitro : 'Chưa phân quyền'}"
+                              th:class="${u.vaiTro != null && u.vaiTro.ten_vaitro == 'ROLE_ADMIN' ? 'px-2 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-semibold' : 'px-2 py-1 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold'}">
+                            ROLE
+                        </span>
+                    </td>
+
+                    <!-- Ngày tạo -->
+                    <td class="py-4 px-4 text-slate-500" th:text="${u.ngayTao != null ? #temporals.format(u.ngayTao, 'dd/MM/yyyy') : 'Chưa rõ'}">Ngày tạo</td>
+
+                    <!-- Trạng thái -->
+                    <td class="py-4 px-4">
+                        <span th:if="${u.trang_thai == true || u.trang_thai == null}" class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-[10px] font-bold uppercase">Hoạt động</span>
+                        <span th:if="${u.trang_thai == false}" class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold uppercase">Đã khóa</span>
+                    </td>
+
+                    <!-- Thao tác Khóa / Mở khóa -->
+                    <td class="py-4 px-4 text-right">
+                        <!-- Không được tự khóa tài khoản Admin chính đang đăng nhập -->
+                        <span th:if="${#authentication.name == u.email}" class="text-xs text-slate-400 italic">Tài khoản của bạn</span>
+                        
+                        <a th:if="${#authentication.name != u.email}" th:href="@{/admin/nguoi-dung/toggle(id=${u.id_nguoidung})}" 
+                           th:class="${u.trang_thai == false ? 'px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm shadow-green-500/20 inline-block' : 'px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm shadow-red-500/20 inline-block'}"
+                           th:text="${u.trang_thai == false ? 'Mở khóa' : 'Khóa'}">
+                            Thao tác
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="7" class="py-8 text-center text-slate-400">Không có người dùng nào.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -19,7 +19,6 @@ public class ChiTietDonHangService {
 
     // Xem chi tiết các món hàng của một đơn hàng cụ thể
     public List<ChiTietDonHang> getDetailsByOrderId(Integer orderId) {
-        // Sau này bạn có thể viết thêm logic tìm kiếm tại đây
-        return chiTietDonHangRepository.findAll();
+        return chiTietDonHangRepository.findByDonHangId_donhang(orderId);
     }
 }

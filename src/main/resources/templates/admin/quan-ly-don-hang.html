@@ -1,106 +1,35 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý đơn hàng | Văn phòng phẩm HUIT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#0B3C8C',
-                        secondary: '#1E5BB8',
-                        accent: '#4DA3FF',
-                        appBg: '#F5F9FF',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        @reference "tailwindcss";
-        @theme {
-            --color-primary: #0B3C8C;
-            --color-secondary: #1E5BB8;
-            --color-accent: #4DA3FF;
-            --color-app-bg: #F5F9FF;
-        }
-    </style>
-</head>
-<body class="min-h-screen flex bg-app-bg text-slate-800 font-sans">
-<!-- Sidebar -->
-<aside class="w-72 bg-slate-50 border-r border-slate-200 p-6 flex flex-col fixed h-full">
-    <a href="home.html" class="flex items-center gap-2 mb-10 px-2">
-        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
-            <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
-        </div>
-        <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">HUIT Admin</span>
-    </a>
-
-    <nav class="space-y-2 flex-1">
-        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
-            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-            Tổng quan
-        </a>
-        <a href="quan-ly-san-pham.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
-            <i data-lucide="package" class="w-5 h-5"></i>
-            Quản lý sản phẩm
-        </a>
-        <a href="quan-ly-don-hang.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all">
-            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-            Quản lý đơn hàng
-        </a>
-        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
-            <i data-lucide="users" class="w-5 h-5"></i>
-            Khách hàng
-        </a>
-        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium">
-            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-            Báo cáo doanh thu
-        </a>
-    </nav>
-
-    <div class="pt-6 border-t border-slate-200">
-        <a href="home.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all font-medium">
-            <i data-lucide="log-out" class="w-5 h-5"></i>
-            Thoát Admin
-        </a>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout-admin :: layout('Quản lý đơn hàng', ~{::div#donhang-content})}">
+<body>
+<div id="donhang-content" class="space-y-6">
+    <!-- Messages -->
+    <div th:if="${success}" class="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${success}"></span>
     </div>
-</aside>
+    <div th:if="${error}" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${error}"></span>
+    </div>
 
-<!-- Main Content -->
-<main class="flex-1 ml-72 p-10">
-    <header class="flex justify-between items-center mb-8">
-        <div>
-            <h1 class="text-3xl font-bold text-slate-900">Quản lý đơn hàng</h1>
-            <p class="text-slate-500">Theo dõi và cập nhật trạng thái đơn hàng</p>
-        </div>
-        <div class="flex gap-3">
-            <button class="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">
-                <i data-lucide="download" class="w-5 h-5 text-slate-600"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- Filters -->
-    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 mb-8">
-        <div class="flex flex-wrap gap-4">
-            <div class="flex-1 relative">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                <input type="text" placeholder="Tìm theo mã đơn, khách hàng..." class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
-            </div>
+    <!-- Filters & Actions -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="text-sm font-bold text-slate-500">Lọc theo trạng thái:</span>
             <div class="flex gap-2">
-                <button class="px-4 py-2 bg-primary text-white rounded-xl font-bold text-sm">Tất cả</button>
-                <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Chờ xác nhận</button>
-                <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Đang giao</button>
-                <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Đã hoàn thành</button>
+                <a th:href="@{/admin/don-hang(status='Tất cả')}"
+                   th:class="${selectedStatus == 'Tất cả' ? 'px-4 py-2 bg-primary text-white rounded-xl font-bold text-xs shadow-sm shadow-primary/20' : 'px-4 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-100'}">Tất cả</a>
+                <a th:href="@{/admin/don-hang(status='Chờ xác nhận')}"
+                   th:class="${selectedStatus == 'Chờ xác nhận' ? 'px-4 py-2 bg-amber-500 text-white rounded-xl font-bold text-xs shadow-sm shadow-amber-500/20' : 'px-4 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-100'}">Chờ xác nhận</a>
+                <a th:href="@{/admin/don-hang(status='Đã xác nhận')}"
+                   th:class="${selectedStatus == 'Đã xác nhận' ? 'px-4 py-2 bg-blue-500 text-white rounded-xl font-bold text-xs shadow-sm shadow-blue-500/20' : 'px-4 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-100'}">Đã xác nhận</a>
+                <a th:href="@{/admin/don-hang(status='Đang giao')}"
+                   th:class="${selectedStatus == 'Đang giao' ? 'px-4 py-2 bg-indigo-500 text-white rounded-xl font-bold text-xs shadow-sm shadow-indigo-500/20' : 'px-4 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-100'}">Đang giao</a>
+                <a th:href="@{/admin/don-hang(status='Hoàn thành')}"
+                   th:class="${selectedStatus == 'Hoàn thành' ? 'px-4 py-2 bg-green-500 text-white rounded-xl font-bold text-xs shadow-sm shadow-green-500/20' : 'px-4 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-100'}">Hoàn thành</a>
+                <a th:href="@{/admin/don-hang(status='Đã hủy')}"
+                   th:class="${selectedStatus == 'Đã hủy' ? 'px-4 py-2 bg-red-500 text-white rounded-xl font-bold text-xs shadow-sm shadow-red-500/20' : 'px-4 py-2 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-100'}">Đã hủy</a>
             </div>
         </div>
     </div>
@@ -114,89 +43,82 @@
                     <th class="pb-4 px-4">Mã đơn</th>
                     <th class="pb-4 px-4">Khách hàng</th>
                     <th class="pb-4 px-4">Ngày đặt</th>
+                    <th class="pb-4 px-4">Phương thức</th>
                     <th class="pb-4 px-4">Tổng tiền</th>
-                    <th class="pb-4 px-4">Thanh toán</th>
                     <th class="pb-4 px-4">Trạng thái</th>
-                    <th class="pb-4 px-4 text-right">Thao tác</th>
+                    <th class="pb-4 px-4 text-center">Cập nhật trạng thái</th>
+                    <th class="pb-4 px-4 text-right">Chi tiết</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                <tr class="text-sm group hover:bg-slate-50 transition-colors">
-                    <td class="py-4 px-4 font-bold text-primary">#HUIT-88291</td>
+                <tr th:each="order : ${orders}" class="text-sm group hover:bg-slate-50 transition-colors">
+                    <td class="py-4 px-4 font-bold text-primary" th:text="'#' + ${order.id_donhang}">#000</td>
                     <td class="py-4 px-4">
-                        <p class="font-bold text-slate-900">Nguyễn Văn A</p>
-                        <p class="text-xs text-slate-400">0901 234 567</p>
+                        <p class="font-bold text-slate-900" th:text="${order.nguoiDung.ho_ten}">Họ tên</p>
+                        <p class="text-xs text-slate-400" th:text="${order.nguoiDung.so_dien_thoai}">SĐT</p>
                     </td>
-                    <td class="py-4 px-4 text-slate-500">08/04/2024</td>
-                    <td class="py-4 px-4 font-bold text-slate-900">200.000đ</td>
-                    <td class="py-4 px-4 text-slate-600">COD</td>
+                    <td class="py-4 px-4 text-slate-500" th:text="${#temporals.format(order.ngayDat, 'dd/MM/yyyy HH:mm')}">Ngày</td>
+                    <td class="py-4 px-4 text-slate-600 font-medium" th:text="${order.phuongThucThanhToan}">COD</td>
+                    <td class="py-4 px-4 font-bold text-slate-900" th:text="${#numbers.formatDecimal(order.tong_tien, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</td>
                     <td class="py-4 px-4">
-                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-600">Đang xử lý</span>
+                        <span th:text="${order.trang_thai}"
+                              th:class="${order.trang_thai == 'Chờ xác nhận' ? 'px-2 py-1 bg-amber-100 text-amber-600 rounded-full text-[10px] font-bold uppercase' : 
+                                         (order.trang_thai == 'Đã xác nhận' ? 'px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-[10px] font-bold uppercase' : 
+                                         (order.trang_thai == 'Đang giao' ? 'px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full text-[10px] font-bold uppercase' : 
+                                         (order.trang_thai == 'Hoàn thành' ? 'px-2 py-1 bg-green-100 text-green-600 rounded-full text-[10px] font-bold uppercase' : 
+                                         'px-2 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold uppercase')))}">
+                            Trạng thái
+                        </span>
                     </td>
+                    
+                    <!-- Cập nhật nhanh trạng thái -->
+                    <td class="py-4 px-4 text-center">
+                        <form th:action="@{/admin/don-hang/update-status}" method="POST" class="inline-flex gap-1.5 justify-center">
+                            <input type="hidden" name="orderId" th:value="${order.id_donhang}">
+                            
+                            <!-- Nút Xác nhận -->
+                            <button type="submit" name="status" value="Đã xác nhận" th:if="${order.trang_thai == 'Chờ xác nhận'}"
+                                    class="px-2 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-all active:scale-95">
+                                Xác nhận
+                            </button>
+                            
+                            <!-- Nút Giao hàng -->
+                            <button type="submit" name="status" value="Đang giao" th:if="${order.trang_thai == 'Đã xác nhận'}"
+                                    class="px-2 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-lg transition-all active:scale-95">
+                                Giao hàng
+                            </button>
+                            
+                            <!-- Nút Hoàn thành -->
+                            <button type="submit" name="status" value="Hoàn thành" th:if="${order.trang_thai == 'Đang giao'}"
+                                    class="px-2 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition-all active:scale-95">
+                                Hoàn thành
+                            </button>
+                            
+                            <!-- Nút Hủy đơn (cho phép nếu chưa giao/hoàn thành) -->
+                            <button type="submit" name="status" value="Đã hủy" th:if="${order.trang_thai == 'Chờ xác nhận' || order.trang_thai == 'Đã xác nhận'}"
+                                    onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')"
+                                    class="px-2 py-1.5 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold rounded-lg transition-all active:scale-95">
+                                Hủy đơn
+                            </button>
+                            
+                            <span th:if="${order.trang_thai == 'Hoàn thành' || order.trang_thai == 'Đã hủy'}" class="text-xs text-slate-400 italic">Không khả dụng</span>
+                        </form>
+                    </td>
+                    
+                    <!-- Xem chi tiết -->
                     <td class="py-4 px-4 text-right">
-                        <a href="chi-tiet-don-hang.html" class="p-2 text-slate-400 hover:text-primary transition-colors inline-block">
+                        <a th:href="@{/admin/don-hang/detail(id=${order.id_donhang})}" class="p-2 text-slate-400 hover:text-primary transition-colors bg-slate-50 rounded-xl hover:bg-white border border-slate-100 shadow-sm inline-block">
                             <i data-lucide="eye" class="w-5 h-5"></i>
                         </a>
                     </td>
                 </tr>
-                <tr class="text-sm group hover:bg-slate-50 transition-colors">
-                    <td class="py-4 px-4 font-bold text-primary">#HUIT-88290</td>
-                    <td class="py-4 px-4">
-                        <p class="font-bold text-slate-900">Trần Thị B</p>
-                        <p class="text-xs text-slate-400">0988 777 666</p>
-                    </td>
-                    <td class="py-4 px-4 text-slate-500">07/04/2024</td>
-                    <td class="py-4 px-4 font-bold text-slate-900">450.000đ</td>
-                    <td class="py-4 px-4 text-slate-600">Momo</td>
-                    <td class="py-4 px-4">
-                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-600">Đang giao</span>
-                    </td>
-                    <td class="py-4 px-4 text-right">
-                        <a href="chi-tiet-don-hang.html" class="p-2 text-slate-400 hover:text-primary transition-colors inline-block">
-                            <i data-lucide="eye" class="w-5 h-5"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="text-sm group hover:bg-slate-50 transition-colors">
-                    <td class="py-4 px-4 font-bold text-primary">#HUIT-88289</td>
-                    <td class="py-4 px-4">
-                        <p class="font-bold text-slate-900">Lê Văn C</p>
-                        <p class="text-xs text-slate-400">0912 345 678</p>
-                    </td>
-                    <td class="py-4 px-4 text-slate-500">07/04/2024</td>
-                    <td class="py-4 px-4 font-bold text-slate-900">120.000đ</td>
-                    <td class="py-4 px-4 text-slate-600">COD</td>
-                    <td class="py-4 px-4">
-                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-green-100 text-green-600">Đã giao</span>
-                    </td>
-                    <td class="py-4 px-4 text-right">
-                        <a href="chi-tiet-don-hang.html" class="p-2 text-slate-400 hover:text-primary transition-colors inline-block">
-                            <i data-lucide="eye" class="w-5 h-5"></i>
-                        </a>
-                    </td>
+                <tr th:if="${#lists.isEmpty(orders)}">
+                    <td colspan="8" class="py-8 text-center text-slate-400">Không tìm thấy đơn hàng nào thuộc trạng thái này.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <!-- Pagination -->
-        <div class="p-6 border-t border-slate-50 flex justify-between items-center">
-            <p class="text-sm text-slate-500">Hiển thị 1-10 trên 84 đơn hàng</p>
-            <div class="flex gap-2">
-                <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50" disabled>
-                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
-                </button>
-                <button class="px-4 py-2 bg-primary text-white rounded-lg font-bold">1</button>
-                <button class="px-4 py-2 hover:bg-slate-50 rounded-lg font-bold">2</button>
-                <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50">
-                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
-                </button>
-            </div>
-        </div>
     </div>
-</main>
-
-<script>
-    lucide.createIcons();
-</script>
+</div>
 </body>
 </html>

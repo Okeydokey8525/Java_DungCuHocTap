@@ -17,4 +17,16 @@ public class VaiTroService {
     public List<VaiTro> getAllRoles() {
         return vaiTroRepository.findAll();
     }
+
+    public VaiTro findByName(String name) {
+        return vaiTroRepository.findByTen_vaitro(name);
+    }
+
+    public VaiTro findById(Integer id) {
+        return vaiTroRepository.findById(id).orElse(null);
+    }
+
+    public VaiTro save(VaiTro vaiTro) {
+        return vaiTroRepository.save(vaiTro);
+    }
 }

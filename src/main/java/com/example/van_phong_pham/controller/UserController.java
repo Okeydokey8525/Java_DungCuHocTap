@@ -4,9 +4,11 @@ import com.example.van_phong_pham.model.NguoiDung;
 import com.example.van_phong_pham.service.DonHangService;
 import com.example.van_phong_pham.service.NguoiDungService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -17,6 +19,7 @@ import java.security.Principal;
 public class UserController {
     private final NguoiDungService nguoiDungService;
     private final DonHangService donHangService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     // Trang Hồ sơ cá nhân
     @GetMapping("/profile")
@@ -34,6 +37,64 @@ public class UserController {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy thông tin người dùng");
             return "redirect:/login";
         }
+    }
+
+    // Cập nhật thông tin hồ sơ
+    @PostMapping("/profile/update")
+    public String updateProfile(Principal principal,
+                               @RequestParam String ho_ten,
+                               @RequestParam String so_dien_thoai,
+                               @RequestParam(required = false) String dia_chi,
+                               RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        try {
+            NguoiDung user = nguoiDungService.findByEmail(principal.getName());
+            user.setHo_ten(ho_ten);
+            user.setSo_dien_thoai(so_dien_thoai);
+            user.setDia_chi(dia_chi);
+            nguoiDungService.updateUser(user);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Không thể cập nhật thông tin: " + e.getMessage());
+        }
+        return "redirect:/profile";
+    }
+
+    // Đổi mật khẩu
+    @PostMapping("/profile/change-password")
+    public String changePassword(Principal principal,
+                                @RequestParam String currentPassword,
+                                @RequestParam String newPassword,
+                                @RequestParam String confirmPassword,
+                                RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        try {
+            NguoiDung user = nguoiDungService.findByEmail(principal.getName());
+            
+            // Verify current password
+            if (!passwordEncoder.matches(currentPassword, user.getMat_khau())) {
+                redirectAttributes.addFlashAttribute("error", "Mật khẩu hiện tại không đúng.");
+                return "redirect:/profile";
+            }
+            if (!newPassword.equals(confirmPassword)) {
+                redirectAttributes.addFlashAttribute("error", "Mật khẩu mới xác nhận không khớp.");
+                return "redirect:/profile";
+            }
+            if (newPassword.length() < 6) {
+                redirectAttributes.addFlashAttribute("error", "Mật khẩu mới phải có ít nhất 6 ký tự.");
+                return "redirect:/profile";
+            }
+            
+            nguoiDungService.changePassword(user, newPassword);
+            redirectAttributes.addFlashAttribute("success", "Đổi mật khẩu thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi đổi mật khẩu: " + e.getMessage());
+        }
+        return "redirect:/profile";
     }
 
     // Trang Lịch sử mua hàng
@@ -90,7 +151,7 @@ public class UserController {
     }
 
     // Hủy đơn hàng (chỉ cho đơn hàng ở trạng thái "Chờ xác nhận")
-    @GetMapping("/orders/cancel")
+    @PostMapping("/orders/cancel")
     public String cancelOrder(
             @RequestParam Integer orderId,
             Principal principal,
@@ -111,7 +172,7 @@ public class UserController {
                 return "redirect:/orders";
             }
             
-            if (!"Chờ xác nhận".equals(order.getTrang_thai())) {
+            if (!"Chờ xác nhận".equalsIgnoreCase(order.getTrang_thai()) && !"Chờ thanh toán".equalsIgnoreCase(order.getTrang_thai())) {
                 redirectAttributes.addFlashAttribute("error", "Đơn hàng này không thể hủy");
                 return "redirect:/orders";
             }

@@ -27,7 +27,7 @@ public class GioHang {
     @Column(name = "ngay_tao", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime ngayTao;
 
-    @Column(name = "ngay_capnhat", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @Column(name = "ngay_capnhat", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime ngayCapNhat;
 
     // Constructor mặc định

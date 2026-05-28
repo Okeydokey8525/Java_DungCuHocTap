@@ -32,7 +32,7 @@ public class DonHangService {
 
     // Lưu đơn hàng và chi tiết đơn hàng (transaction)
     @Transactional
-    public void saveOrder(DonHang donHang, List<ChiTietDonHang> chiTiets) {
+    public DonHang saveOrder(DonHang donHang, List<ChiTietDonHang> chiTiets) {
         // 1. Lưu đơn hàng trước để lấy ID
         DonHang savedOrder = donHangRepository.save(donHang);
 
@@ -41,6 +41,7 @@ public class DonHangService {
             ct.setDonHang(savedOrder);
             chiTietRepository.save(ct);
         }
+        return savedOrder;
     }
 
     // Lấy danh sách đơn hàng của người dùng
