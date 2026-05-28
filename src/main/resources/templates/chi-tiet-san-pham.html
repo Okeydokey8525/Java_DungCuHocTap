@@ -89,11 +89,15 @@
                         <button id="increaseQty" class="p-2.5 hover:bg-slate-50 transition-colors">
                             <i data-lucide="plus" class="w-4 h-4"></i>
                         </button>
-                    </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button id="addToCartBtn" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-primary/20 active:scale-95 flex items-center justify-center gap-2 flex-1" 
+                <div class="flex flex-col gap-3">
+                    <button id="buyNowBtn" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-red-600/20 active:scale-95 flex items-center justify-center gap-2 w-full" 
+                            th:data-product-id="${sanPham.id_sanpham}">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                        Mua ngay
+                    </button>
+                    <button id="addToCartBtn" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-primary/20 active:scale-95 flex items-center justify-center gap-2 w-full" 
                             th:data-product-id="${sanPham.id_sanpham}">
                         <i data-lucide="shopping-cart" class="w-5 h-5"></i>
                         Thêm vào giỏ hàng
@@ -212,6 +216,48 @@
                     } else if (val > maxVal) {
                         this.value = maxVal;
                     }
+                });
+            }
+
+            const buyNowBtn = document.getElementById('buyNowBtn');
+            if (buyNowBtn) {
+                buyNowBtn.addEventListener('click', function() {
+                    const productId = this.dataset.productId;
+                    const quantity = parseInt(quantityInput.value) || 1;
+                    
+                    this.disabled = true;
+                    this.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Đang xử lý...';
+                    lucide.createIcons();
+
+                    const formData = new FormData();
+                    formData.append('sanPhamId', productId);
+                    formData.append('soLuong', quantity);
+
+                    fetch('/cart/add', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '/checkout?items=' + productId;
+                        } else {
+                            showToast(data.message || 'Cần đăng nhập để mua hàng.', 'error');
+                            if (!data.success && data.message.includes('đăng nhập')) {
+                                setTimeout(() => {
+                                    window.location.href = '/login';
+                                }, 1000);
+                            }
+                        }
+                    })
+                    .catch(() => {
+                        showToast('Lỗi kết nối giỏ hàng!', 'error');
+                    })
+                    .finally(() => {
+                        this.disabled = false;
+                        this.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Mua ngay';
+                        lucide.createIcons();
+                    });
                 });
             }
 

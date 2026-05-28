@@ -90,7 +90,7 @@ public class HomeController {
             @RequestParam(required = false) String thuongHieu,
             @RequestParam(required = false, defaultValue = "newest") String sort,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "9") int size,
+            @RequestParam(required = false, defaultValue = "16") int size,
             Model model) {
         
         Page<SanPham> pageResult = sanPhamService.searchProducts(

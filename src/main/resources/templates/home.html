@@ -100,11 +100,16 @@
                 <span class="text-xs text-slate-400 line-through" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
               </div>
               
-              <!-- Nút thêm nhanh giỏ hàng AJAX -->
-              <button th:onclick="'quickAddToCart(' + ${sp.id_sanpham} + ')'" 
-                      class="p-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200 active:scale-90">
-                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-              </button>
+              <div class="flex items-center gap-1.5">
+                <button th:onclick="'quickBuyNow(' + ${sp.id_sanpham} + ')'" 
+                        class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-all duration-200 active:scale-90 flex items-center gap-1">
+                  Mua ngay
+                </button>
+                <button th:onclick="'quickAddToCart(' + ${sp.id_sanpham} + ')'" 
+                        class="p-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200 active:scale-90">
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -152,10 +157,16 @@
                       th:text="${sp.gia_giam != null ? #numbers.formatDecimal(sp.gia_giam, 0, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
                 <span class="text-xs text-slate-400 line-through" th:if="${sp.gia_giam != null}" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
               </div>
-              <button th:onclick="'quickAddToCart(' + ${sp.id_sanpham} + ')'" 
-                      class="p-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200 active:scale-90">
-                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-              </button>
+              <div class="flex items-center gap-1.5">
+                <button th:onclick="'quickBuyNow(' + ${sp.id_sanpham} + ')'" 
+                        class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-all duration-200 active:scale-90 flex items-center gap-1">
+                  Mua ngay
+                </button>
+                <button th:onclick="'quickAddToCart(' + ${sp.id_sanpham} + ')'" 
+                        class="p-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200 active:scale-90">
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -168,6 +179,33 @@
 
   <!-- JS AJAX Add to Cart -->
   <script>
+    function quickBuyNow(productId) {
+        const formData = new FormData();
+        formData.append('sanPhamId', productId);
+        formData.append('soLuong', 1);
+
+        fetch('/cart/add', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/checkout?items=' + productId;
+            } else {
+                showToast(data.message || 'Cần đăng nhập để mua hàng.', 'error');
+                if (!data.success && data.message.includes('đăng nhập')) {
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1000);
+                }
+            }
+        })
+        .catch(() => {
+            showToast('Lỗi kết nối giỏ hàng!', 'error');
+        });
+    }
+
     function quickAddToCart(productId) {
         const formData = new FormData();
         formData.append('sanPhamId', productId);
