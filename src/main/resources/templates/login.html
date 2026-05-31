@@ -142,7 +142,10 @@
                     </div>
                     <div class="relative">
                         <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                        <input type="password" name="password" placeholder="••••••••" required class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all">
+                        <input id="password-input" type="password" name="password" placeholder="••••••••" required class="w-full pl-12 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all">
+                        <button type="button" id="toggle-password-btn" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                            <i data-lucide="eye" id="eye-icon" class="w-5 h-5"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -158,13 +161,13 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <button class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-sm">
+                <button type="button" onclick="showDevelopingAlert()" class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-sm">
                     <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
                     Google
                 </button>
-                <button class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-sm">
-                    <i data-lucide="github" class="w-5 h-5"></i>
-                    GitHub
+                <button type="button" onclick="showDevelopingAlert()" class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-sm">
+                    <i data-lucide="facebook" class="w-5 h-5 text-[#1877F2]"></i>
+                    Facebook
                 </button>
             </div>
         </div>
@@ -196,6 +199,30 @@
     menuBtn.addEventListener('click', toggleMenu);
     closeBtn.addEventListener('click', toggleMenu);
     overlay.addEventListener('click', toggleMenu);
+
+    // Toggle Password Visibility Logic
+    const togglePasswordBtn = document.getElementById('toggle-password-btn');
+    const passwordInput = document.getElementById('password-input');
+    const eyeIcon = document.getElementById('eye-icon');
+
+    if (togglePasswordBtn && passwordInput && eyeIcon) {
+        togglePasswordBtn.addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.setAttribute('data-lucide', 'eye');
+            }
+            // Re-render Lucide icons to update SVG
+            lucide.createIcons();
+        });
+    }
+
+    // Social Login Developing Alert
+    function showDevelopingAlert() {
+        alert("Chức năng đang được phát triển!");
+    }
 </script>
 </body>
 </html>
