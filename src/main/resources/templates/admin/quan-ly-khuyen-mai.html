@@ -43,6 +43,13 @@
                            placeholder="Ví dụ: 15 cho 15%, hoặc 50000 cho 50k" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
                 </div>
 
+                <!-- Giảm tối đa (Capping) -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Giảm tối đa (đ) - Áp dụng cho giảm %</label>
+                    <input type="number" step="any" min="0" name="giam_toi_da" th:value="${editCoupon != null ? editCoupon.giam_toi_da : ''}"
+                           placeholder="Nhập giới hạn giảm, ví dụ: 50000" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+                </div>
+
                 <!-- Đơn tối thiểu -->
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-slate-700">Đơn hàng tối thiểu * (đ)</label>

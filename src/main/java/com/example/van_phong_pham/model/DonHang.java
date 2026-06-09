@@ -30,6 +30,12 @@ public class DonHang {
 
     private Double phi_van_chuyen = 0.0;
 
+    @Column(name = "don_vi_van_chuyen")
+    private String donViVanChuyen;
+
+    @Column(name = "ma_van_don")
+    private String maVanDon;
+
     @ManyToOne
     @JoinColumn(name = "id_nguoidung") // Ai là người đặt đơn này?
     private NguoiDung nguoiDung;

@@ -6,6 +6,7 @@ import com.example.van_phong_pham.service.GioHangService;
 import com.example.van_phong_pham.service.NguoiDungService;
 import com.example.van_phong_pham.service.SanPhamService;
 import com.example.van_phong_pham.service.MaGiamGiaService;
+import com.example.van_phong_pham.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ public class CheckoutController {
     private final NguoiDungService nguoiDungService;
     private final SanPhamService sanPhamService;
     private final MaGiamGiaService maGiamGiaService;
+    private final EmailService emailService;
 
     // Hiển thị trang thanh toán
     @GetMapping("/checkout")
@@ -199,8 +201,22 @@ public class CheckoutController {
                 gioHangService.removeFromCart(user, cartItem.getSanPham().getId_sanpham());
             }
 
+            // Send order confirmation email
+            String subject = "Xác nhận đơn hàng #" + savedOrder.getId_donhang() + " - HUIT Stationery";
+            String content = "<h3>Xin chào " + user.getHo_ten() + ",</h3>"
+                    + "<p>Cảm ơn bạn đã đặt hàng tại HUIT Stationery.</p>"
+                    + "<p>Mã đơn hàng của bạn là: <strong>#" + savedOrder.getId_donhang() + "</strong></p>"
+                    + "<p>Tổng tiền: <strong>" + String.format("%,.0f", tongTien) + " đ</strong></p>"
+                    + "<p>Phương thức thanh toán: <strong>" + phuongThucThanhToan.toUpperCase() + "</strong></p>"
+                    + "<p>Chúng tôi sẽ xử lý đơn hàng của bạn trong thời gian sớm nhất.</p>"
+                    + "<br><p>Trân trọng,</p><p>HUIT Stationery Team</p>";
+
+            emailService.sendEmail(user.getEmail(), subject, content);
+
             if (phuongThucThanhToan.equalsIgnoreCase("banking")) {
                 return "redirect:/checkout/payment-transfer/" + savedOrder.getId_donhang();
+            } else if (phuongThucThanhToan.equalsIgnoreCase("vnpay")) {
+                return "redirect:/api/payment/create_payment?orderId=" + savedOrder.getId_donhang();
             }
 
             redirectAttributes.addFlashAttribute("success", 
