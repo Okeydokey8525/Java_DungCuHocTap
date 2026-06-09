@@ -139,6 +139,21 @@
                 </div>
             </div>
 
+            <!-- Theo dõi vận đơn (nếu có) -->
+            <div th:if="${order.donViVanChuyen != null}" class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl shadow-sm border border-blue-100 overflow-hidden p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 border-b border-blue-200/50 pb-2">Thông tin vận chuyển</h3>
+                <div class="space-y-3 font-medium text-sm">
+                    <div class="flex justify-between text-slate-600">
+                        <span>Đơn vị giao hàng:</span>
+                        <span class="text-slate-900 font-bold" th:text="${order.donViVanChuyen}">Giao Hàng Nhanh</span>
+                    </div>
+                    <div class="flex justify-between text-slate-600" th:if="${order.maVanDon != null}">
+                        <span>Mã vận đơn:</span>
+                        <span class="text-primary font-bold" th:text="${order.maVanDon}">MVD12345</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Địa chỉ nhận hàng -->
             <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden p-6">
                 <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-50 pb-2">Thông tin nhận hàng</h3>

@@ -23,6 +23,8 @@ public class MaGiamGia {
 
     private Double don_toi_thieu; // minimum order amount to use
 
+    private Double giam_toi_da; // Maximum amount that can be discounted for PERCENT logic
+
     @Column(name = "ngay_bat_dau")
     private LocalDateTime ngayBatDau;
 
@@ -55,7 +57,11 @@ public class MaGiamGia {
         if (!isValid()) return 0.0;
         if (don_toi_thieu != null && orderTotal < don_toi_thieu) return 0.0;
         if ("PERCENT".equals(loai_giam)) {
-            return orderTotal * gia_tri_giam / 100;
+            Double calculatedDiscount = orderTotal * gia_tri_giam / 100;
+            if (giam_toi_da != null && giam_toi_da > 0 && calculatedDiscount > giam_toi_da) {
+                return giam_toi_da;
+            }
+            return calculatedDiscount;
         } else {
             return Math.min(gia_tri_giam, orderTotal);
         }

@@ -7,6 +7,7 @@ import com.example.van_phong_pham.service.DanhMucService;
 import com.example.van_phong_pham.service.SanPhamService;
 import com.example.van_phong_pham.service.DanhGiaService;
 import com.example.van_phong_pham.service.NguoiDungService;
+import com.example.van_phong_pham.service.DonHangService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class HomeController {
     private final DanhMucService danhMucService;
     private final DanhGiaService danhGiaService;
     private final NguoiDungService nguoiDungService;
+    private final DonHangService donHangService;
 
     @GetMapping({"/", "/home"})
     public String index(Model model) {
@@ -37,13 +39,28 @@ public class HomeController {
     }
 
     @GetMapping("/san-pham/{id}")
-    public String detail(@PathVariable Integer id, Model model) {
+    public String detail(@PathVariable Integer id, Model model, Principal principal) {
         SanPham sp = sanPhamService.findById(id);
         if (sp != null) {
             model.addAttribute("sanPham", sp);
             model.addAttribute("reviews", danhGiaService.getApprovedReviews(sp));
             model.addAttribute("averageRating", danhGiaService.getAverageRating(id));
             model.addAttribute("reviewCount", danhGiaService.countReviews(id));
+
+            // Thêm SEO Meta Tags
+            model.addAttribute("metaDescription", sp.getMo_ta() != null ? sp.getMo_ta() : "Mua " + sp.getTen_sanpham() + " chính hãng tại HUIT Stationery.");
+            model.addAttribute("ogTitle", sp.getTen_sanpham());
+            model.addAttribute("ogImage", sp.getHinh_anh());
+
+            boolean canReview = false;
+            if (principal != null) {
+                NguoiDung user = nguoiDungService.findByEmail(principal.getName());
+                if (user != null) {
+                    canReview = donHangService.hasUserPurchasedProduct(user, id)
+                             && !danhGiaService.hasUserReviewed(user, sp);
+                }
+            }
+            model.addAttribute("canReview", canReview);
         }
         return "chi-tiet-san-pham";
     }
@@ -66,6 +83,16 @@ public class HomeController {
                 return "redirect:/home";
             }
             
+            if (!donHangService.hasUserPurchasedProduct(user, id_sanpham)) {
+                redirectAttributes.addFlashAttribute("error", "Bạn phải mua và hoàn thành đơn hàng sản phẩm này mới được đánh giá.");
+                return "redirect:/san-pham/" + id_sanpham;
+            }
+
+            if (danhGiaService.hasUserReviewed(user, sp)) {
+                redirectAttributes.addFlashAttribute("error", "Bạn đã đánh giá sản phẩm này rồi.");
+                return "redirect:/san-pham/" + id_sanpham;
+            }
+
             DanhGia dg = new DanhGia();
             dg.setSanPham(sp);
             dg.setNguoiDung(user);

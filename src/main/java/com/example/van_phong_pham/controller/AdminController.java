@@ -206,6 +206,8 @@ public class AdminController {
     public String updateOrderStatus(
             @RequestParam Integer orderId,
             @RequestParam String status,
+            @RequestParam(required = false) String donViVanChuyen,
+            @RequestParam(required = false) String maVanDon,
             RedirectAttributes redirectAttributes) {
         try {
             DonHang order = donHangService.getOrderById(orderId);
@@ -223,7 +225,12 @@ public class AdminController {
                 }
 
                 if (validTransition) {
-                    donHangService.updateOrderStatus(orderId, status);
+                    order.setTrang_thai(status);
+                    if ("Đang giao".equals(status)) {
+                        if (donViVanChuyen != null) order.setDonViVanChuyen(donViVanChuyen);
+                        if (maVanDon != null) order.setMaVanDon(maVanDon);
+                    }
+                    donHangService.updateOrder(order);
                     redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái đơn hàng thành công!");
                 } else {
                     redirectAttributes.addFlashAttribute("error", "Chuyển đổi trạng thái từ '" + currentStatus + "' sang '" + status + "' là không hợp lệ!");

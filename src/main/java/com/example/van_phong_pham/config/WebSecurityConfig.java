@@ -9,10 +9,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import com.example.van_phong_pham.service.CustomOAuth2UserService;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -23,6 +28,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/home", "/san-pham/**", "/danh-muc/**",
                                 "/css/**", "/js/**", "/JS/**", "/images/**", "/uploads/**",
@@ -38,6 +46,14 @@ public class WebSecurityConfig {
                         .defaultSuccessUrl("/home", true)
                         .failureUrl("/login?error=true")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .defaultSuccessUrl("/home", true)
+                        .failureUrl("/login?error=true")
                 )
                 .rememberMe(remember -> remember
                         .key("huit-stationery-remember-me-key")

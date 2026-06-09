@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta Tags for SEO -->
+    <meta name="description" th:content="${metaDescription != null ? metaDescription : 'HUIT Stationery - Cửa hàng văn phòng phẩm uy tín chất lượng, đầy đủ đồ dùng học tập.'}">
+    <meta name="keywords" th:content="${metaKeywords != null ? metaKeywords : 'văn phòng phẩm, đồ dùng học tập, bút, vở, huit stationery'}">
+    <!-- Open Graph (Facebook/Zalo) -->
+    <meta property="og:title" th:content="${ogTitle != null ? ogTitle : (title + ' | Văn Phòng Phẩm Online')}">
+    <meta property="og:description" th:content="${metaDescription != null ? metaDescription : 'HUIT Stationery - Nâng tầm trải nghiệm học tập và làm việc.'}">
+    <meta property="og:image" th:content="${ogImage != null ? ogImage : 'https://example.com/images/default-og.jpg'}">
+    <meta property="og:type" content="website">
+
     <title th:text="${title} + ' | Văn Phòng Phẩm Online'">Văn Phòng Phẩm Online</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +33,15 @@
             }
         }
     </script>
+    <!-- Google Analytics Dummy -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
     <style>
         @reference "tailwindcss";
         @theme {

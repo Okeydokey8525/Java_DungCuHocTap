@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Kết quả thanh toán', ~{::div#payment-result-content})}">
+<body>
+<div id="payment-result-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 text-center max-w-2xl mx-auto">
+        <div th:if="${message == 'Thanh toán thành công'}" class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="check-circle" class="w-10 h-10"></i>
+        </div>
+        <div th:unless="${message == 'Thanh toán thành công'}" class="w-20 h-20 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="x-circle" class="w-10 h-10"></i>
+        </div>
+
+        <h2 class="text-2xl font-bold text-slate-900 mb-2" th:text="${message}">Kết quả thanh toán</h2>
+
+        <div class="mt-8">
+            <a th:href="@{/orders}" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-secondary transition-all">
+                <i data-lucide="list"></i> Xem đơn hàng
+            </a>
+            <a th:href="@{/home}" class="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all ml-4">
+                <i data-lucide="home"></i> Về trang chủ
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
