@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout-admin :: layout('Quản lý danh mục', ~{::div#danhmuc-content})}">
+<body>
+<div id="danhmuc-content" class="space-y-6">
+    <!-- Messages -->
+    <div th:if="${success}" class="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${error}"></span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Form thêm/sửa -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 h-fit">
+            <h3 class="font-bold text-slate-900 text-lg mb-6" th:text="${editCat != null ? 'Cập nhật danh mục' : 'Thêm danh mục mới'}">Thêm danh mục</h3>
+            <form th:action="@{/admin/danh-muc/save}" method="POST" class="space-y-4">
+                <input type="hidden" name="id_danhmuc" th:value="${editCat != null ? editCat.id_danhmuc : ''}">
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Tên danh mục *</label>
+                    <input type="text" name="ten_danhmuc" required th:value="${editCat != null ? editCat.ten_danhmuc : ''}"
+                           placeholder="Ví dụ: Dụng cụ học tập" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="flex-1 bg-primary hover:bg-secondary text-white py-3 rounded-xl font-bold transition-all shadow-md shadow-primary/20 active:scale-95 text-sm">
+                        Lưu danh mục
+                    </button>
+                    <a th:href="@{/admin/danh-muc}" th:if="${editCat != null}"
+                       class="px-4 py-3 border border-slate-200 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-all text-sm flex items-center justify-center">
+                        Hủy
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bảng danh sách danh mục -->
+        <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
+            <h3 class="font-bold text-slate-900 text-lg mb-6">Tất cả danh mục</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                    <tr class="text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                        <th class="pb-4 px-4">Mã</th>
+                        <th class="pb-4 px-4">Tên danh mục</th>
+                        <th class="pb-4 px-4 text-right">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                    <tr th:each="cat : ${categories}" class="text-sm group hover:bg-slate-50 transition-colors">
+                        <td class="py-4 px-4 font-bold text-primary" th:text="'#DM-' + ${cat.id_danhmuc}">#0</td>
+                        <td class="py-4 px-4 font-semibold text-slate-900" th:text="${cat.ten_danhmuc}">Tên</td>
+                        <td class="py-4 px-4 text-right">
+                            <div class="flex justify-end gap-2">
+                                <a th:href="@{/admin/danh-muc(editId=${cat.id_danhmuc})}" class="p-2 text-slate-400 hover:text-primary transition-colors bg-slate-50 rounded-xl hover:bg-white border border-slate-100 shadow-sm">
+                                    <i data-lucide="edit-3" class="w-5 h-5"></i>
+                                </a>
+                                <a th:href="@{/admin/danh-muc/delete(id=${cat.id_danhmuc})}" onclick="return confirm('Chú ý: Xóa danh mục này có thể ảnh hưởng đến sản phẩm liên quan. Bạn chắc chắn muốn xóa?')"
+                                   class="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-xl hover:bg-white border border-slate-100 shadow-sm">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(categories)}">
+                        <td colspan="3" class="py-8 text-center text-slate-400">Không có danh mục nào.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

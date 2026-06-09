@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Không tìm thấy trang | Văn phòng phẩm HUIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B3C8C',
+                        secondary: '#1E5BB8',
+                        accent: '#4DA3FF',
+                        appBg: '#F5F9FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @reference "tailwindcss";
+        body { background-color: #F5F9FF; }
+    </style>
+</head>
+<body class="font-sans text-slate-800">
+<main class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full text-center space-y-8 p-12 bg-white rounded-3xl shadow-xl shadow-primary/5 border border-slate-100">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-primary/5 text-primary rounded-full mb-4">
+            <i data-lucide="search-x" class="w-12 h-12"></i>
+        </div>
+        <div class="space-y-4">
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">404</h1>
+            <h2 class="text-xl font-bold text-slate-800">Không tìm thấy trang</h2>
+            <p class="text-slate-500 leading-relaxed">
+                Trang bạn đang tìm không tồn tại hoặc đã bị xóa. Vui lòng kiểm tra lại đường dẫn.
+            </p>
+        </div>
+        <div class="pt-4">
+            <a href="home.html" class="inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-secondary text-white font-bold rounded-2xl transition-all shadow-lg shadow-primary/20 active:scale-95">
+                Quay về trang chủ
+            </a>
+        </div>
+    </div>
+</main>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>

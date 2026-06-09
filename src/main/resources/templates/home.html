@@ -1,29 +1,238 @@
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-<head>
-  <title>Trang Chủ</title>
-</head>
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Trang chủ', ~{::div#home-content})}">
 <body>
-<div layout:fragment="content">
-  <div class="banner-section mb-5 shadow-sm rounded overflow-hidden">
-    <img src="https://huit.edu.vn/images/slider1.jpg" class="d-block w-100" style="height: 350px; object-fit: cover;" alt="Khuyến mãi">
-  </div>
-
-  <h3 class="fw-bold text-huit mb-4 border-bottom pb-2">SẢN PHẨM MỚI NHẤT</h3>
-
-  <div class="row row-cols-1 row-cols-md-4 g-4">
-    <div class="col" th:each="sp : ${listSanPham}">
-      <div class="card h-100 product-card border-0 shadow-sm">
-        <img th:src="${sp.hinh_anh}" class="card-img-top p-3" alt="Sản phẩm" style="height: 200px; object-fit: contain;">
-        <div class="card-body text-center">
-          <h6 class="card-title fw-bold text-dark" th:text="${sp.ten_sanpham}">Tên sản phẩm</h6>
-          <p class="card-text text-danger fw-bold" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</p>
-          <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="btn btn-outline-huit btn-sm w-100">Xem chi tiết</a>
+<div id="home-content">
+  <!-- Hero Section -->
+  <header class="relative overflow-hidden pt-16 pb-24 lg:pt-24 lg:pb-32 bg-gradient-to-br from-white to-blue-50/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            Văn Phòng Phẩm Online Chào Bạn!
+          </div>
+          <h1 class="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-tight">
+            Sáng tạo hơn với <span class="text-primary">Dụng cụ học tập</span> chất lượng
+          </h1>
+          <p class="text-xl text-slate-600 leading-relaxed max-w-lg">
+            Khám phá bộ sưu tập văn phòng phẩm đa dạng, tinh tế, mang lại cảm hứng sáng tạo và hiệu quả vượt bậc.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a th:href="@{/san-pham/tim-kiem}" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 active:scale-95 flex items-center gap-2">
+              Mua sắm ngay
+              <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+            <a th:href="@{/gioi-thieu}" class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-semibold transition-all active:scale-95">Tìm hiểu thêm</a>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="absolute -top-20 -right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+          <img src="https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=1000" alt="Stationery" class="relative rounded-3xl shadow-2xl transform hover:scale-[1.01] transition-transform duration-500">
         </div>
       </div>
     </div>
-  </div>
+  </header>
+
+  <!-- Categories -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-end mb-12">
+        <div>
+          <h2 class="text-3xl font-bold text-slate-900 mb-2">Danh mục nổi bật</h2>
+          <p class="text-slate-500">Tìm kiếm nhanh theo nhu cầu của bạn</p>
+        </div>
+        <a th:href="@{/san-pham/tim-kiem}" class="text-primary font-bold flex items-center gap-1 hover:underline text-sm">
+          Xem tất cả danh mục
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div th:each="cat : ${listDanhMuc}" class="group text-center space-y-4">
+          <a th:href="@{/san-pham/tim-kiem(danhMuc=${cat.id_danhmuc})}" class="block">
+            <div class="aspect-square bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-primary/5 group-hover:scale-105 transition-all duration-300 border border-slate-100/50">
+              <!-- Render icon dựa vào ID hoặc mặc định -->
+              <i data-lucide="pen-tool" class="w-10 h-10 text-primary" th:if="${cat.id_danhmuc == 1}"></i>
+              <i data-lucide="book-open" class="w-10 h-10 text-primary" th:if="${cat.id_danhmuc == 2}"></i>
+              <i data-lucide="scissors" class="w-10 h-10 text-primary" th:if="${cat.id_danhmuc == 3}"></i>
+              <i data-lucide="folder" class="w-10 h-10 text-primary" th:if="${cat.id_danhmuc == 4}"></i>
+              <i data-lucide="backpack" class="w-10 h-10 text-primary" th:if="${cat.id_danhmuc == 5}"></i>
+              <i data-lucide="package" class="w-10 h-10 text-primary" th:if="${cat.id_danhmuc > 5}"></i>
+            </div>
+            <h3 class="font-bold text-slate-800 mt-3 group-hover:text-primary transition-colors text-sm" th:text="${cat.ten_danhmuc}">Bút viết</h3>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Khuyến mãi nổi bật (Nếu có sản phẩm sale) -->
+  <section class="py-20 bg-slate-50/50" th:if="${not #lists.isEmpty(saleProducts)}">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-end mb-12">
+        <div>
+          <h2 class="text-3xl font-bold text-slate-900 mb-2">Đang giảm giá cực hot</h2>
+          <p class="text-slate-500">Ưu đãi giảm giá độc quyền giới hạn</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div th:each="sp : ${saleProducts}" class="bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group overflow-hidden flex flex-col">
+          <!-- Ảnh + Ribbon -->
+          <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="block relative aspect-square overflow-hidden bg-slate-50">
+            <img th:src="${sp.hinh_anh != null ? sp.hinh_anh : '/images/default-product.jpg'}" alt="Product" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute top-3 left-3">
+              <span class="px-2 py-1 bg-red-500 text-white text-[10px] font-bold rounded uppercase tracking-wider">SALE HOT</span>
+            </div>
+          </a>
+          <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+            <div class="space-y-1">
+              <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="block">
+                <h3 class="text-sm font-semibold text-slate-800 line-clamp-1 hover:text-primary transition-colors" th:text="${sp.ten_sanpham}">Tên SP</h3>
+              </a>
+              <p class="text-xs text-slate-400" th:text="${sp.thuong_hieu != null && sp.thuong_hieu != '' ? sp.thuong_hieu : 'HUIT'}">Deli</p>
+            </div>
+            
+            <div class="flex items-center justify-between pt-2">
+              <div class="flex flex-col">
+                <!-- Hiển thị giá giảm & giá cũ -->
+                <span class="text-lg font-bold text-primary" th:text="${#numbers.formatDecimal(sp.gia_giam, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                <span class="text-xs text-slate-400 line-through" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+              </div>
+              
+              <div class="flex items-center gap-1.5">
+                <button th:onclick="'quickBuyNow(' + ${sp.id_sanpham} + ')'" 
+                        class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-all duration-200 active:scale-90 flex items-center gap-1">
+                  Mua ngay
+                </button>
+                <button th:onclick="'quickAddToCart(' + ${sp.id_sanpham} + ')'" 
+                        class="p-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200 active:scale-90">
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products List -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-end mb-12">
+        <div>
+          <h2 class="text-3xl font-bold text-slate-900 mb-2">Tất cả sản phẩm</h2>
+          <p class="text-slate-500">Đầy đủ các loại văn phòng phẩm bạn cần</p>
+        </div>
+        <a th:href="@{/san-pham/tim-kiem}" class="text-primary font-bold flex items-center gap-1 hover:underline text-sm">
+          Xem chi tiết bộ lọc
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div th:each="sp : ${listSanPham}" class="bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group overflow-hidden flex flex-col">
+          <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="block relative aspect-square overflow-hidden bg-slate-50">
+            <img th:src="${sp.hinh_anh != null ? sp.hinh_anh : '/images/default-product.jpg'}" alt="Product" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute bottom-3 left-3">
+              <span class="px-2 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold text-primary rounded uppercase tracking-wider border border-slate-100" 
+                    th:text="${sp.danhMuc != null ? sp.danhMuc.ten_danhmuc : 'Văn phòng phẩm'}">Loại</span>
+            </div>
+            <div class="absolute top-3 right-3" th:if="${sp.gia_giam != null}">
+              <span class="px-2 py-1 bg-red-500 text-white text-[9px] font-bold rounded uppercase">Giảm giá</span>
+            </div>
+          </a>
+          <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+            <div class="space-y-1">
+              <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="block">
+                <h3 class="text-sm font-semibold text-slate-800 line-clamp-1 hover:text-primary transition-colors" th:text="${sp.ten_sanpham}">Bút Bi</h3>
+              </a>
+              <p class="text-xs text-slate-400" th:text="${sp.thuong_hieu != null && sp.thuong_hieu != '' ? sp.thuong_hieu : 'HUIT'}">Thiên Long</p>
+            </div>
+            
+            <div class="flex items-center justify-between pt-2">
+              <div class="flex flex-col">
+                <span class="text-lg font-bold text-primary" 
+                      th:text="${sp.gia_giam != null ? #numbers.formatDecimal(sp.gia_giam, 0, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                <span class="text-xs text-slate-400 line-through" th:if="${sp.gia_giam != null}" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button th:onclick="'quickBuyNow(' + ${sp.id_sanpham} + ')'" 
+                        class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-all duration-200 active:scale-90 flex items-center gap-1">
+                  Mua ngay
+                </button>
+                <button th:onclick="'quickAddToCart(' + ${sp.id_sanpham} + ')'" 
+                        class="p-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200 active:scale-90">
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div th:if="${#lists.isEmpty(listSanPham)}" class="col-span-4 text-center py-10 text-slate-400">
+          Chưa có sản phẩm nào được đăng tải.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JS AJAX Add to Cart -->
+  <script>
+    function quickBuyNow(productId) {
+        const formData = new FormData();
+        formData.append('sanPhamId', productId);
+        formData.append('soLuong', 1);
+
+        fetch('/cart/add', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/checkout?items=' + productId;
+            } else {
+                showToast(data.message || 'Cần đăng nhập để mua hàng.', 'error');
+                if (!data.success && data.message.includes('đăng nhập')) {
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1000);
+                }
+            }
+        })
+        .catch(() => {
+            showToast('Lỗi kết nối giỏ hàng!', 'error');
+        });
+    }
+
+    function quickAddToCart(productId) {
+        const formData = new FormData();
+        formData.append('sanPhamId', productId);
+        formData.append('soLuong', 1);
+
+        fetch('/cart/add', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                // Cập nhật badge giỏ hàng
+                const badge = document.getElementById('cart-badge-count');
+                if (badge) {
+                    badge.textContent = data.cartCount;
+                }
+            } else {
+                showToast(data.message || 'Cần đăng nhập để mua hàng.', 'error');
+            }
+        })
+        .catch(() => {
+            showToast('Lỗi kết nối giỏ hàng!', 'error');
+        });
+    }
+  </script>
 </div>
 </body>
 </html>

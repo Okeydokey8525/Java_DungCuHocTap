@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Chi tiết đơn hàng #' + ${order.id_donhang}, ~{::div#order-detail-content})}">
+<body>
+<div id="order-detail-content" class="max-w-5xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-4 mb-8">
+        <a th:href="@{/orders}" class="p-2 bg-white rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">
+            <i data-lucide="arrow-left" class="w-5 h-5 text-slate-600"></i>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Chi tiết đơn hàng</h1>
+            <p class="text-slate-500">Mã đơn hàng: <span class="font-bold text-primary" th:text="'#' + ${order.id_donhang}">#HUIT-001</span></p>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Left Column: Products & Status -->
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-slate-900">Sản phẩm đã mua</h3>
+                    
+                    <!-- Trạng thái -->
+                    <span th:if="${order.trang_thai == 'Chờ xác nhận'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-yellow-100 text-yellow-600">
+                        Chờ xác nhận
+                    </span>
+                    <span th:if="${order.trang_thai == 'Đang xử lý' || order.trang_thai == 'Đã xác nhận'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-100 text-blue-600">
+                        Đang xử lý
+                    </span>
+                    <span th:if="${order.trang_thai == 'Đang giao hàng'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-purple-100 text-purple-600">
+                        Đang giao hàng
+                    </span>
+                    <span th:if="${order.trang_thai == 'Đã giao' || order.trang_thai == 'Hoàn thành'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-green-100 text-green-600">
+                        Đã giao
+                    </span>
+                    <span th:if="${order.trang_thai == 'Đã hủy'}" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-100 text-red-600">
+                        Đã hủy
+                    </span>
+                </div>
+                
+                <div class="space-y-6 divide-y divide-slate-100">
+                    <!-- Product Item -->
+                    <div th:each="item : ${orderDetails}" class="flex gap-4 pt-4 first:pt-0">
+                        <div class="w-20 h-20 bg-slate-50 rounded-xl overflow-hidden shrink-0 border border-slate-100">
+                            <img th:src="${item.sanPham.hinh_anh}" alt="Product" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm line-clamp-1 hover:text-primary transition-colors">
+                                    <a th:href="@{'/san-pham/' + ${item.sanPham.id_sanpham}}" th:text="${item.sanPham.ten_sanpham}">Tên sản phẩm</a>
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-1" th:text="${item.sanPham.thuong_hieu != null ? item.sanPham.thuong_hieu : 'HUIT'}">Thiên Long</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <p class="text-xs text-slate-500" th:text="'Số lượng: ' + ${item.so_luong}">Số lượng: 1</p>
+                                <p class="font-bold text-primary" th:text="${#numbers.formatDecimal(item.don_gia, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Trạng Thái -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden p-6">
+                <h3 class="font-bold text-slate-900 mb-6">Trạng thái đơn hàng</h3>
+                
+                <!-- Nếu đơn hàng bị hủy -->
+                <div th:if="${order.trang_thai == 'Đã hủy'}" class="relative pl-8 space-y-4">
+                    <div class="relative">
+                        <div class="absolute -left-8 top-1 w-6 h-6 bg-red-500 rounded-full border-4 border-white shadow-sm z-10 flex items-center justify-center">
+                            <i data-lucide="x" class="w-3 h-3 text-white"></i>
+                        </div>
+                        <p class="font-bold text-red-600 text-sm">Đã hủy đơn hàng</p>
+                        <p class="text-xs text-slate-400" th:text="${#temporals.format(order.ngayDat, 'dd/MM/yyyy - HH:mm')}">Thời gian</p>
+                        <p class="text-sm text-slate-500 mt-1">Đơn hàng này đã bị hủy theo yêu cầu hoặc do sự cố.</p>
+                    </div>
+                </div>
+
+                <!-- Luồng hoạt động bình thường -->
+                <div th:if="${order.trang_thai != 'Đã hủy'}" class="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
+                    
+                    <!-- Bước 1: Chờ xác nhận / Tiếp nhận -->
+                    <div class="relative">
+                        <div class="absolute -left-8 top-1 w-6 h-6 rounded-full border-4 border-white shadow-sm z-10"
+                             th:classappend="${order.trang_thai == 'Chờ xác nhận' ? 'bg-primary' : 'bg-green-500'}"></div>
+                        <p class="font-bold text-slate-900 text-sm">Đã đặt hàng & Tiếp nhận</p>
+                        <p class="text-xs text-slate-400" th:text="${#temporals.format(order.ngayDat, 'dd/MM/yyyy - HH:mm')}">Thời gian</p>
+                        <p class="text-sm text-slate-500 mt-1">Hệ thống đã ghi nhận đơn đặt hàng của bạn.</p>
+                    </div>
+
+                    <!-- Bước 2: Đang xử lý / Đã xác nhận -->
+                    <div class="relative" 
+                         th:classappend="${order.trang_thai == 'Chờ xác nhận' ? 'opacity-40' : ''}">
+                        <div class="absolute -left-8 top-1 w-6 h-6 rounded-full border-4 border-white shadow-sm z-10"
+                             th:classappend="${order.trang_thai == 'Chờ xác nhận' ? 'bg-slate-200' : (order.trang_thai == 'Đang xử lý' || order.trang_thai == 'Đã xác nhận' ? 'bg-primary' : 'bg-green-500')}"></div>
+                        <p class="font-bold text-slate-900 text-sm">Đang xử lý đơn hàng</p>
+                        <p class="text-sm text-slate-500 mt-1">Nhân viên đang soạn hàng, đóng gói để bàn giao cho đối tác vận chuyển.</p>
+                    </div>
+
+                    <!-- Bước 3: Đang giao hàng -->
+                    <div class="relative" 
+                         th:classappend="${order.trang_thai == 'Chờ xác nhận' || order.trang_thai == 'Đang xử lý' || order.trang_thai == 'Đã xác nhận' ? 'opacity-40' : ''}">
+                        <div class="absolute -left-8 top-1 w-6 h-6 rounded-full border-4 border-white shadow-sm z-10"
+                             th:classappend="${order.trang_thai == 'Chờ xác nhận' || order.trang_thai == 'Đang xử lý' || order.trang_thai == 'Đã xác nhận' ? 'bg-slate-200' : (order.trang_thai == 'Đang giao hàng' ? 'bg-primary' : 'bg-green-500')}"></div>
+                        <p class="font-bold text-slate-900 text-sm">Đang vận chuyển</p>
+                        <p class="text-sm text-slate-500 mt-1">Đơn hàng đang trên đường giao tới địa chỉ nhận của bạn.</p>
+                    </div>
+
+                    <!-- Bước 4: Hoàn thành / Đã giao -->
+                    <div class="relative" 
+                         th:classappend="${order.trang_thai != 'Đã giao' && order.trang_thai != 'Hoàn thành' ? 'opacity-40' : ''}">
+                        <div class="absolute -left-8 top-1 w-6 h-6 rounded-full border-4 border-white shadow-sm z-10"
+                             th:classappend="${order.trang_thai == 'Đã giao' || order.trang_thai == 'Hoàn thành' ? 'bg-green-500' : 'bg-slate-200'}"></div>
+                        <p class="font-bold text-slate-900 text-sm">Đã giao thành công</p>
+                        <p class="text-sm text-slate-500 mt-1">Đơn hàng đã được giao nhận hoàn tất.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Summary & Shipping -->
+        <div class="space-y-8">
+            <!-- Tổng cộng tiền -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 border-b border-slate-50 pb-2">Tóm tắt thanh toán</h3>
+                <div class="space-y-4 font-medium text-sm">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Tạm tính</span>
+                        <span class="text-slate-800" th:text="${#numbers.formatDecimal(order.tong_tien - order.phi_van_chuyen, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Phí vận chuyển</span>
+                        <span class="text-slate-800" th:text="${order.phi_van_chuyen == 0 ? 'Miễn phí' : #numbers.formatDecimal(order.phi_van_chuyen, 0, 'COMMA', 0, 'POINT') + ' đ'}">0đ</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold text-primary pt-4 border-t border-slate-100">
+                        <span>Tổng cộng</span>
+                        <span th:text="${#numbers.formatDecimal(order.tong_tien, 0, 'COMMA', 0, 'POINT') + ' đ'}">200.000đ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Địa chỉ nhận hàng -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden p-6">
+                <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-50 pb-2">Thông tin nhận hàng</h3>
+                <div class="space-y-4">
+                    <div class="flex gap-3">
+                        <i data-lucide="user" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <p class="text-sm text-slate-700 font-bold" th:text="${user.ho_ten}">Nguyễn Văn A</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <i data-lucide="phone" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <p class="text-sm text-slate-700" th:text="${user.so_dien_thoai}">0901 234 567</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <p class="text-sm text-slate-700 leading-relaxed" th:text="${order.diaChiGiaoHang}">Địa chỉ nhận hàng</p>
+                    </div>
+                    <div class="flex gap-3 pt-2 border-t border-slate-50" th:if="${order.ghi_chu != null && !order.ghi_chu.isEmpty()}">
+                        <i data-lucide="message-square" class="w-5 h-5 text-slate-400 shrink-0"></i>
+                        <div class="text-xs text-slate-500">
+                            <span class="font-bold block">Ghi chú giao hàng:</span>
+                            <span th:text="${order.ghi_chu}">Yêu cầu giao hàng...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phương thức thanh toán -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden p-6">
+                <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-50 pb-2">Thanh toán</h3>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary/5 rounded-lg flex items-center justify-center shrink-0">
+                        <i data-lucide="credit-card" class="w-6 h-6 text-primary"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-700" 
+                           th:text="${order.phuongThucThanhToan == 'COD' ? 'Thanh toán khi nhận hàng (COD)' : 'Chuyển khoản ngân hàng'}">COD</p>
+                        <p class="text-xs text-slate-400">Đơn hàng thanh toán bằng <span th:text="${order.phuongThucThanhToan}">COD</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

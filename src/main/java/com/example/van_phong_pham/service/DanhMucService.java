@@ -22,4 +22,16 @@ public class DanhMucService {
     public DanhMuc getById(Integer id) {
         return danhMucRepository.findById(id).orElse(null);
     }
+
+    public DanhMuc findById(Integer id) {
+        return danhMucRepository.findById(id).orElse(null);
+    }
+
+    public DanhMuc save(DanhMuc danhMuc) {
+        return danhMucRepository.save(danhMuc);
+    }
+
+    public void delete(Integer id) {
+        danhMucRepository.deleteById(id);
+    }
 }

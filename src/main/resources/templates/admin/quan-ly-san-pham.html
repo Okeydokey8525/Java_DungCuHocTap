@@ -1,10 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout-admin :: layout('Quản lý sản phẩm', ~{::div#sanpham-content})}">
 <body>
+<div id="sanpham-content" class="space-y-6">
+    <!-- Messages -->
+    <div th:if="${success}" class="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3">
+        <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="text-sm font-semibold" th:text="${error}"></span>
+    </div>
 
+    <!-- Header Action Button -->
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold text-slate-800">Danh sách sản phẩm</h2>
+        <button onclick="toggleProductForm()" class="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-primary/20">
+            <i data-lucide="plus" class="w-5 h-5"></i>
+            <span id="btn-form-toggle-text">Thêm sản phẩm mới</span>
+        </button>
+    </div>
+
+    <!-- Collapsible Product Form -->
+    <div id="product-form-card" th:class="${editProduct != null ? 'bg-white rounded-3xl shadow-sm border border-slate-100 p-6' : 'bg-white rounded-3xl shadow-sm border border-slate-100 p-6 hidden'}">
+        <h3 class="font-bold text-slate-900 text-lg mb-6" th:text="${editProduct != null ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}">Thêm sản phẩm mới</h3>
+        <form th:action="@{/admin/san-pham/save}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <input type="hidden" name="id_sanpham" th:value="${editProduct != null ? editProduct.id_sanpham : ''}">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Tên sản phẩm -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Tên sản phẩm *</label>
+                    <input type="text" name="ten_sanpham" required th:value="${editProduct != null ? editProduct.ten_sanpham : ''}"
+                           placeholder="Nhập tên sản phẩm" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+                </div>
+
+                <!-- Danh mục -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Danh mục *</label>
+                    <select name="danhMucId" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all text-slate-600">
+                        <option value="">Chọn danh mục</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id_danhmuc}" th:text="${cat.ten_danhmuc}"
+                                th:selected="${editProduct != null && editProduct.danhMuc != null && editProduct.danhMuc.id_danhmuc == cat.id_danhmuc}"></option>
+                    </select>
+                </div>
+
+                <!-- Thương hiệu -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Thương hiệu</label>
+                    <input type="text" name="thuong_hieu" th:value="${editProduct != null ? editProduct.thuong_hieu : ''}"
+                           placeholder="Nhập thương hiệu" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Giá bán -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Giá bán * (đ)</label>
+                    <input type="number" min="0" step="any" name="gia" required th:value="${editProduct != null ? editProduct.gia : ''}"
+                           placeholder="Giá gốc sản phẩm" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+                </div>
+
+                <!-- Giá giảm -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Giá giảm (đ)</label>
+                    <input type="number" min="0" step="any" name="gia_giam" th:value="${editProduct != null ? editProduct.gia_giam : ''}"
+                           placeholder="Bỏ trống nếu không giảm giá" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+                </div>
+
+                <!-- Số lượng tồn kho -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Số lượng tồn kho *</label>
+                    <input type="number" min="0" name="so_luong" required th:value="${editProduct != null ? editProduct.so_luong : '0'}"
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all">
+                </div>
+
+                <!-- Trạng thái bán -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700">Trạng thái bán</label>
+                    <select name="trang_thai" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all text-slate-600">
+                        <option value="true" th:selected="${editProduct == null || editProduct.trang_thai == true}">Đang kinh doanh</option>
+                        <option value="false" th:selected="${editProduct != null && editProduct.trang_thai == false}">Ngừng kinh doanh</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Upload hình ảnh và mô tả -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-2 md:col-span-1">
+                    <label class="text-sm font-bold text-slate-700">Hình ảnh sản phẩm</label>
+                    <input type="file" name="imageFile" accept="image/*" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary">
+                    <p class="text-xs text-slate-400 mt-1">Upload ảnh mới để thay thế ảnh cũ.</p>
+                    <div th:if="${editProduct != null && editProduct.hinh_anh != null}" class="mt-3">
+                        <p class="text-xs text-slate-500 mb-1">Ảnh hiện tại:</p>
+                        <img th:src="${editProduct.hinh_anh}" class="w-20 h-20 object-cover rounded-xl border border-slate-200">
+                    </div>
+                </div>
+
+                <div class="space-y-2 md:col-span-2">
+                    <label class="text-sm font-bold text-slate-700">Mô tả sản phẩm</label>
+                    <textarea name="mo_ta" rows="4" placeholder="Nhập mô tả sản phẩm chi tiết..."
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-primary transition-all"
+                              th:text="${editProduct != null ? editProduct.mo_ta : ''}"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="cancelProductForm()" class="px-5 py-3 border border-slate-200 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-all active:scale-95">
+                    Hủy bỏ
+                </button>
+                <button type="submit" class="px-5 py-3 bg-primary hover:bg-secondary text-white rounded-xl font-bold transition-all shadow-md shadow-primary/20 active:scale-95">
+                    Lưu sản phẩm
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Product Table and List -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                <tr class="text-left text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                    <th class="pb-4 px-4">Sản phẩm</th>
+                    <th class="pb-4 px-4">Danh mục</th>
+                    <th class="pb-4 px-4">Giá bán (Gốc / Giảm)</th>
+                    <th class="pb-4 px-4">Thương hiệu</th>
+                    <th class="pb-4 px-4">Tồn kho</th>
+                    <th class="pb-4 px-4">Trạng thái</th>
+                    <th class="pb-4 px-4 text-right">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                <tr th:each="sp : ${products}" class="text-sm group hover:bg-slate-50 transition-colors">
+                    <!-- Tên + Ảnh -->
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-100">
+                                <img th:src="${sp.hinh_anh != null ? sp.hinh_anh : '/images/default-product.jpg'}" alt="Product Image" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-900" th:text="${sp.ten_sanpham}">Bút Bi</p>
+                                <p class="text-xs text-slate-400" th:text="'Mã: SP-' + ${sp.id_sanpham}">Mã</p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Danh mục -->
+                    <td class="py-4 px-4 text-slate-600" th:text="${sp.danhMuc != null ? sp.danhMuc.ten_danhmuc : 'Chưa phân loại'}">Danh mục</td>
+
+                    <!-- Giá bán -->
+                    <td class="py-4 px-4 font-bold">
+                        <div class="flex flex-col">
+                            <span class="text-slate-900" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                            <span class="text-xs text-red-500 font-semibold" th:if="${sp.gia_giam != null}" th:text="'Khuyến mãi: ' + ${#numbers.formatDecimal(sp.gia_giam, 0, 'COMMA', 0, 'POINT')} + 'đ'">giảm</span>
+                        </div>
+                    </td>
+
+                    <!-- Thương hiệu -->
+                    <td class="py-4 px-4 text-slate-600" th:text="${sp.thuong_hieu != null && sp.thuong_hieu != '' ? sp.thuong_hieu : 'HUIT'}">Thương hiệu</td>
+
+                    <!-- Tồn kho -->
+                    <td class="py-4 px-4 font-semibold" th:class="${sp.so_luong == 0 ? 'py-4 px-4 font-bold text-red-600' : (sp.so_luong < 5 ? 'py-4 px-4 font-bold text-orange-500' : 'py-4 px-4 text-slate-600')}"
+                        th:text="${sp.so_luong}">0</td>
+
+                    <!-- Trạng thái -->
+                    <td class="py-4 px-4">
+                        <span th:if="${sp.trang_thai == true && sp.so_luong > 0}" class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-[10px] font-bold uppercase">Còn hàng</span>
+                        <span th:if="${sp.trang_thai == true && sp.so_luong == 0}" class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-[10px] font-bold uppercase">Hết hàng</span>
+                        <span th:if="${sp.trang_thai == false}" class="px-2 py-1 bg-slate-100 text-slate-500 rounded-full text-[10px] font-bold uppercase">Ngừng bán</span>
+                    </td>
+
+                    <!-- Thao tác -->
+                    <td class="py-4 px-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <a th:href="@{/admin/san-pham(editId=${sp.id_sanpham})}" class="p-2 text-slate-400 hover:text-primary transition-colors bg-slate-50 rounded-xl hover:bg-white shadow-sm border border-slate-100">
+                                <i data-lucide="edit-3" class="w-5 h-5"></i>
+                            </a>
+                            <a th:href="@{/admin/san-pham/delete(id=${sp.id_sanpham})}" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')"
+                               class="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-xl hover:bg-white shadow-sm border border-slate-100">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(products)}">
+                    <td colspan="7" class="py-8 text-center text-slate-400">Không tìm thấy sản phẩm nào.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Scripts for toggling form -->
+    <script>
+        function toggleProductForm() {
+            const formCard = document.getElementById('product-form-card');
+            const text = document.getElementById('btn-form-toggle-text');
+            if (formCard.classList.contains('hidden')) {
+                formCard.classList.remove('hidden');
+                text.textContent = 'Đóng Form';
+            } else {
+                formCard.classList.add('hidden');
+                text.textContent = 'Thêm sản phẩm mới';
+            }
+        }
+        
+        function cancelProductForm() {
+            const formCard = document.getElementById('product-form-card');
+            formCard.classList.add('hidden');
+            document.getElementById('btn-form-toggle-text').textContent = 'Thêm sản phẩm mới';
+            // redirect to normal list if we are in edit mode
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('editId')) {
+                window.location.href = '/admin/san-pham';
+            }
+        }
+    </script>
+</div>
 </body>
 </html>

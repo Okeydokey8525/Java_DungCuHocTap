@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' | Admin Panel'">Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B3C8C',
+                        secondary: '#1E5BB8',
+                        accent: '#4DA3FF',
+                        appBg: '#F5F9FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex bg-appBg text-slate-800 font-sans">
+<!-- Sidebar -->
+<aside class="w-72 bg-slate-50 border-r border-slate-200 p-6 flex flex-col fixed h-full z-30">
+    <a th:href="@{/admin/dashboard}" class="flex items-center gap-2 mb-10 px-2">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+            <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+        </div>
+        <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Admin Panel</span>
+    </a>
+
+    <nav class="space-y-2 flex-1 overflow-y-auto">
+        <a th:href="@{/admin/dashboard}" 
+           th:class="${activePage == 'dashboard' ? 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium'}">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            Tổng quan
+        </a>
+        <a th:href="@{/admin/san-pham}" 
+           th:class="${activePage == 'san-pham' ? 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium'}">
+            <i data-lucide="package" class="w-5 h-5"></i>
+            Quản lý sản phẩm
+        </a>
+        <a th:href="@{/admin/danh-muc}" 
+           th:class="${activePage == 'danh-muc' ? 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium'}">
+            <i data-lucide="list" class="w-5 h-5"></i>
+            Quản lý danh mục
+        </a>
+        <a th:href="@{/admin/don-hang}" 
+           th:class="${activePage == 'don-hang' ? 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium'}">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            Quản lý đơn hàng
+        </a>
+        <a th:href="@{/admin/nguoi-dung}" 
+           th:class="${activePage == 'nguoi-dung' ? 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium'}">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            Quản lý người dùng
+        </a>
+        <a th:href="@{/admin/danh-gia}" 
+           th:class="${activePage == 'danh-gia' ? 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium'}">
+            <i data-lucide="star" class="w-5 h-5"></i>
+            Quản lý đánh giá
+        </a>
+        <a th:href="@{/admin/khuyen-mai}" 
+           th:class="${activePage == 'khuyen-mai' ? 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-primary shadow-sm font-bold transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-white hover:text-primary hover:shadow-sm transition-all font-medium'}">
+            <i data-lucide="percent" class="w-5 h-5"></i>
+            Quản lý khuyến mãi
+        </a>
+    </nav>
+
+    <div class="pt-6 border-t border-slate-200">
+        <a th:href="@{/home}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all font-medium">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            Thoát Admin
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content Wrapper -->
+<div class="flex-1 ml-72 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="flex justify-between items-center py-6 px-10 border-b border-slate-100 bg-white sticky top-0 z-20">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900" th:text="${title}">Dashboard</h1>
+            <p class="text-xs text-slate-500">Hệ thống quản lý bán hàng Văn Phòng Phẩm Online</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Nút xem trang chủ cửa hàng -->
+            <a th:href="@{/home}" class="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm">
+                <i data-lucide="external-link" class="w-4.5 h-4.5 text-slate-500"></i>
+                Xem trang chủ
+            </a>
+            <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                <div class="text-right">
+                    <p class="text-sm font-bold text-slate-900" th:text="${#authentication.name}">admin@huit.edu.vn</p>
+                    <p class="text-xs text-slate-500">Quản trị viên</p>
+                </div>
+                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                    AD
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-10 bg-appBg">
+        <!-- Fragment injection -->
+        <div th:replace="${content}"></div>
+    </main>
+</div>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>

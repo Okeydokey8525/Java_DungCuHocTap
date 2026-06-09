@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Danh sách sản phẩm', ~{::div#danhsach-content})}">
+<body>
+<div id="danhsach-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
+        <a th:href="@{/home}" class="hover:text-primary">Trang chủ</a>
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <span class="text-slate-900 font-medium">Tìm kiếm sản phẩm</span>
+    </nav>
+
+    <div class="flex flex-col gap-8">
+        <!-- Bộ lọc tìm kiếm (Đặt lên trên cùng, full-width) -->
+        <div class="w-full bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <i data-lucide="filter" class="w-5 h-5 text-primary"></i>
+                Bộ lọc tìm kiếm
+            </h3>
+            <form th:action="@{/san-pham/tim-kiem}" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                <!-- Keep keyword and sort if already selected -->
+                <input type="hidden" name="keyword" th:value="${keyword}">
+                <input type="hidden" name="sort" th:value="${selectedSort}">
+
+                <!-- Category filter dropdown -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Danh mục</label>
+                    <select name="danhMuc" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary text-slate-700 font-medium">
+                        <option value="" th:selected="${danhMucId == null}">Tất cả danh mục</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id_danhmuc}" th:text="${cat.ten_danhmuc}" th:selected="${danhMucId == cat.id_danhmuc}">Bút viết</option>
+                    </select>
+                </div>
+
+                <!-- Price filter range -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Khoảng giá (đ)</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" min="0" name="giaMin" th:value="${giaMin != null ? #numbers.formatDecimal(giaMin, 0, '', 0, '') : ''}" 
+                               placeholder="Từ giá" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary font-medium">
+                        <input type="number" min="0" name="giaMax" th:value="${giaMax != null ? #numbers.formatDecimal(giaMax, 0, '', 0, '') : ''}" 
+                               placeholder="Đến giá" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary font-medium">
+                    </div>
+                </div>
+
+                <!-- Brand filter -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Thương hiệu</label>
+                    <input type="text" name="thuongHieu" th:value="${thuongHieu}" placeholder="Ví dụ: Thiên Long, Deli"
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary font-medium">
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="md:col-span-3 flex flex-col sm:flex-row items-center justify-end gap-4 pt-4 border-t border-slate-100 w-full">
+                    <a th:href="@{/san-pham/tim-kiem}" class="text-sm text-slate-400 hover:text-primary font-semibold underline order-2 sm:order-1">
+                        Thiết lập lại bộ lọc
+                    </a>
+                    <button type="submit" class="w-full sm:w-auto bg-primary hover:bg-secondary text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-md shadow-primary/20 active:scale-95 text-sm order-1 sm:order-2">
+                        Áp dụng bộ lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Product Grid & Sorters (Đẩy xuống dưới, full-width) -->
+        <div class="w-full space-y-6">
+            <!-- Header bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">
+                        <span th:if="${keyword != null && keyword != ''}" th:text="'Kết quả cho &quot;' + ${keyword} + '&quot;'">Kết quả</span>
+                        <span th:if="${keyword == null || keyword == ''}">Tất cả sản phẩm</span>
+                        <span class="text-slate-400 font-normal text-sm ml-2" th:text="'(' + ${totalElements} + ' sản phẩm)'">(0 sản phẩm)</span>
+                    </h2>
+                </div>
+                
+                <!-- Sort dropdown -->
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <span class="text-xs font-bold text-slate-500 whitespace-nowrap">Sắp xếp:</span>
+                    <select id="sort-select" onchange="applySort(this.value)"
+                            class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:ring-2 focus:ring-primary/20 outline-none w-full sm:w-auto text-slate-600">
+                        <option value="newest" th:selected="${selectedSort == 'newest'}">Mới nhất</option>
+                        <option value="price_asc" th:selected="${selectedSort == 'price_asc'}">Giá tăng dần</option>
+                        <option value="price_desc" th:selected="${selectedSort == 'price_desc'}">Giá giảm dần</option>
+                        <option value="name" th:selected="${selectedSort == 'name'}">Tên (A - Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid (Dàn 4 cột) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Card -->
+                <div th:each="sp : ${products}" class="bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group overflow-hidden flex flex-col justify-between">
+                    <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="block relative aspect-square overflow-hidden bg-slate-50">
+                        <img th:src="${sp.hinh_anh != null ? sp.hinh_anh : '/images/default-product.jpg'}" alt="Product" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute bottom-3 left-3">
+                            <span class="px-2 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold text-primary rounded uppercase tracking-wider border border-slate-100"
+                                  th:text="${sp.danhMuc != null ? sp.danhMuc.ten_danhmuc : 'Văn phòng phẩm'}">Bút viết</span>
+                        </div>
+                        <div class="absolute top-3 right-3" th:if="${sp.gia_giam != null}">
+                            <span class="px-2 py-1 bg-red-500 text-white text-[9px] font-bold rounded uppercase">Giảm giá</span>
+                        </div>
+                    </a>
+                    <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                        <div class="space-y-1">
+                            <a th:href="@{'/san-pham/' + ${sp.id_sanpham}}" class="block">
+                                <h3 class="text-sm font-semibold text-slate-800 line-clamp-1 hover:text-primary transition-colors" th:text="${sp.ten_sanpham}">Bút Bi</h3>
+                            </a>
+                            <p class="text-xs text-slate-400" th:text="${sp.thuong_hieu != null && sp.thuong_hieu != '' ? sp.thuong_hieu : 'HUIT'}">Thiên Long</p>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-2">
+                            <div class="flex flex-col">
+                                <span class="text-base font-bold text-primary" 
+                                      th:text="${sp.gia_giam != null ? #numbers.formatDecimal(sp.gia_giam, 0, 'COMMA', 0, 'POINT') : #numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                                <span class="text-xs text-slate-400 line-through" th:if="${sp.gia_giam != null}" th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button th:onclick="'quickBuyNow(' + ${sp.id_sanpham} + ')'" 
+                                        class="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-all duration-200 active:scale-90 flex items-center gap-1">
+                                    Mua ngay
+                                </button>
+                                <button th:onclick="'quickAddToCart(' + ${sp.id_sanpham} + ')'"
+                                        class="p-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200 active:scale-90">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:if="${#lists.isEmpty(products)}" class="col-span-full text-center py-20 text-slate-400 flex flex-col items-center justify-center">
+                    <i data-lucide="inbox" class="w-12 h-12 text-slate-300 mb-2"></i>
+                    <p class="text-sm font-semibold">Không tìm thấy sản phẩm nào khớp với bộ lọc.</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center mt-12" th:if="${totalPages > 1}">
+                <nav class="flex items-center gap-2">
+                    <!-- Nút trước -->
+                    <a th:href="@{/san-pham/tim-kiem(keyword=${keyword}, danhMuc=${danhMucId}, giaMin=${giaMin}, giaMax=${giaMax}, thuongHieu=${thuongHieu}, sort=${selectedSort}, page=${currentPage - 1})}"
+                       th:class="${currentPage == 0 ? 'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 pointer-events-none opacity-50 bg-slate-50' : 'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors bg-white'}">
+                        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                    </a>
+                    
+                    <!-- Các số trang -->
+                    <a th:each="pageIdx : ${#numbers.sequence(0, totalPages - 1)}"
+                       th:href="@{/san-pham/tim-kiem(keyword=${keyword}, danhMuc=${danhMucId}, giaMin=${giaMin}, giaMax=${giaMax}, thuongHieu=${thuongHieu}, sort=${selectedSort}, page=${pageIdx})}"
+                       th:text="${pageIdx + 1}"
+                       th:class="${currentPage == pageIdx ? 'w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold' : 'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors bg-white font-bold'}">1</a>
+                    
+                    <!-- Nút sau -->
+                    <a th:href="@{/san-pham/tim-kiem(keyword=${keyword}, danhMuc=${danhMucId}, giaMin=${giaMin}, giaMax=${giaMax}, thuongHieu=${thuongHieu}, sort=${selectedSort}, page=${currentPage + 1})}"
+                       th:class="${currentPage == totalPages - 1 ? 'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 pointer-events-none opacity-50 bg-slate-50' : 'w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors bg-white'}">
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Helper -->
+    <script>
+        // Lấy query string hiện tại
+        function applySort(sortVal) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort', sortVal);
+            url.searchParams.set('page', '0'); // reset về trang 1
+            window.location.href = url.toString();
+        }
+
+        function quickBuyNow(productId) {
+            const formData = new FormData();
+            formData.append('sanPhamId', productId);
+            formData.append('soLuong', 1);
+
+            fetch('/cart/add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/checkout?items=' + productId;
+                } else {
+                    showToast(data.message || 'Cần đăng nhập để mua hàng.', 'error');
+                    if (!data.success && data.message.includes('đăng nhập')) {
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 1000);
+                    }
+                }
+            })
+            .catch(() => {
+                showToast('Lỗi kết nối giỏ hàng!', 'error');
+            });
+        }
+
+        function quickAddToCart(productId) {
+            const formData = new FormData();
+            formData.append('sanPhamId', productId);
+            formData.append('soLuong', 1);
+
+            fetch('/cart/add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    const badge = document.getElementById('cart-badge-count');
+                    if (badge) {
+                        badge.textContent = data.cartCount;
+                    }
+                } else {
+                    showToast(data.message || 'Cần đăng nhập để mua hàng.', 'error');
+                }
+            })
+            .catch(() => {
+                showToast('Lỗi kết nối giỏ hàng!', 'error');
+            });
+        }
+    </script>
+</div>
+</body>
+</html>

@@ -1,112 +1,255 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="layout(title, content)">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title layout:title-pattern="CONTENT_TITLE - HUIT Stationery">HUIT Stationery</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title th:text="${title} + ' | Văn Phòng Phẩm Online'">Văn Phòng Phẩm Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B3C8C',
+                        secondary: '#1E5BB8',
+                        accent: '#4DA3FF',
+                        appBg: '#F5F9FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @reference "tailwindcss";
+        @theme {
+            --color-primary: #0B3C8C;
+            --color-secondary: #1E5BB8;
+            --color-accent: #4DA3FF;
+            --color-app-bg: #F5F9FF;
+        }
+        @layer base {
+            body { @apply bg-appBg text-slate-800 font-sans; }
+        }
+        .nav-link { @apply text-slate-600 hover:text-primary font-semibold transition-colors; }
+        .btn-primary { @apply bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-primary/20 active:scale-95; }
+        .btn-outline { @apply border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-semibold transition-all active:scale-95; }
+        .card { @apply bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300; }
+    </style>
 </head>
-<body>
+<body class="bg-appBg text-slate-800 font-sans min-h-screen flex flex-col">
+<!-- Navbar -->
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <div class="flex items-center gap-8">
+                <a th:href="@{/home}" class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+                        <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Văn Phòng Phẩm Online</span>
+                </a>
+                <div class="hidden md:flex items-center gap-6">
+                    <a th:href="@{/home}" class="nav-link">Trang chủ</a>
+                    <a th:href="@{/san-pham/tim-kiem}" class="nav-link">Sản phẩm</a>
+                    <a th:href="@{/gioi-thieu}" class="nav-link">Về chúng tôi</a>
+                    <a th:href="@{/lien-he}" class="nav-link">Liên hệ</a>
+                    <!-- Link tới Admin Panel nếu có quyền ADMIN -->
+                    <a sec:authorize="hasAuthority('ROLE_ADMIN')" 
+                       th:href="@{/admin/dashboard}" class="nav-link text-red-600 font-bold hover:text-red-700">Trang Admin</a>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Search bar -->
+                <form th:action="@{/san-pham/tim-kiem}" method="GET" class="relative hidden sm:block">
+                    <input type="text" name="keyword" placeholder="Tìm kiếm văn phòng phẩm..." 
+                           class="w-64 pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full focus:ring-2 focus:ring-primary/20 transition-all text-sm outline-none">
+                    <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </button>
+                </form>
 
-<div class="sticky-top shadow-sm">
-    <div class="top-bar bg-light py-1 border-bottom d-none d-md-block">
-        <div class="container-fluid px-4 d-flex justify-content-end gap-4 small text-muted">
-            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-truck-fast me-1"></i> Tra cứu đơn hàng</a>
-            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-headset me-1"></i> Hỗ trợ khách hàng</a>
-            <a href="#" class="text-decoration-none text-reset"><i class="fa-solid fa-heart me-1"></i> Yêu thích</a>
+                <!-- Giỏ hàng -->
+                <a th:href="@{/cart}" class="p-2 hover:bg-slate-100 rounded-full relative transition-colors text-slate-600 hover:text-primary">
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    <span id="cart-badge-count" class="absolute top-0 right-0 w-5 h-5 bg-accent text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">0</span>
+                </a>
+
+                <!-- Tài khoản -->
+                <div class="relative" sec:authorize="isAuthenticated()">
+                    <button id="user-menu-btn" class="p-2 hover:bg-slate-100 rounded-full transition-colors flex items-center gap-1 text-slate-600 hover:text-primary focus:outline-none">
+                        <i data-lucide="user" class="w-6 h-6"></i>
+                    </button>
+                    <!-- Dropdown -->
+                    <div id="user-menu-dropdown" class="absolute right-0 w-48 mt-2 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 hidden z-50">
+                        <a th:href="@{/profile}" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-semibold">Hồ sơ cá nhân</a>
+                        <a th:href="@{/orders}" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-semibold">Đơn hàng của tôi</a>
+                        <div class="border-t border-slate-100 my-1"></div>
+                        <form th:action="@{/logout}" method="POST" class="block w-full">
+                            <!-- Spring Security logout POST -->
+                            <button type="submit" class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 font-bold">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+
+                <a th:href="@{/login}" sec:authorize="!isAuthenticated()" 
+                   class="px-5 py-2.5 bg-primary hover:bg-secondary text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-primary/20 active:scale-95">
+                    Đăng nhập
+                </a>
+            </div>
         </div>
     </div>
+</nav>
 
-    <header class="main-header bg-white py-3">
-        <div class="container-fluid px-4">
-            <div class="row align-items-center">
-                <div class="col-lg-2 col-md-3 col-6">
-                    <a href="/" class="d-flex align-items-center text-decoration-none">
-                        <img src="https://huit.edu.vn/logo.png" alt="HUIT Logo" class="logo-img">
-                        <span class="ms-2 fw-bold brand-name text-huit">STATIONERY</span>
-                    </a>
-                </div>
+<!-- Toast Container -->
+<div id="toast-container" class="fixed top-24 right-6 z-[9999] space-y-3"></div>
 
-                <div class="col-lg-7 col-md-6 d-none d-md-block">
-                    <form action="/search" method="get" class="search-box">
-                        <div class="input-group">
-                            <input type="text" name="keyword" class="form-control border-huit" placeholder="Hôm nay bạn muốn tìm bút bi, tập vở hay quà tặng?">
-                            <button class="btn btn-huit px-4" type="submit">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="col-lg-3 col-md-3 col-6 d-flex justify-content-end align-items-center gap-4">
-                    <div class="user-account d-none d-lg-block">
-                        <a th:href="@{/login}" class="text-decoration-none text-dark d-flex align-items-center">
-                            <i class="fa-regular fa-circle-user fs-4 me-2"></i>
-                            <span class="small fw-semibold">Tài khoản</span>
-                        </a>
-                    </div>
-                    <a href="/cart" class="cart-icon position-relative text-huit">
-                        <i class="fa-solid fa-cart-shopping fs-4"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
-                                3 <span class="visually-hidden">món hàng</span>
-                            </span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <nav class="nav-menu bg-huit text-white py-2">
-        <div class="container-fluid px-4">
-            <ul class="nav justify-content-start gap-3">
-                <li class="nav-item"><a class="nav-link text-white active" href="/">TRANG CHỦ</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">DỤNG CỤ HỌC TẬP</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">BÚT - VIẾT</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">TẬP - VỞ</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">QUÀ TẶNG - ĐỒ CHƠI</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">SALE OFF</a></li>
-            </ul>
-        </div>
-    </nav>
-</div>
-
-<main layout:fragment="content" class="fade-in py-4 px-4">
+<!-- Main Content -->
+<main class="flex-1">
+    <div th:replace="${content}"></div>
 </main>
 
-<footer class="bg-dark text-light pt-5 pb-3 mt-5">
-    <div class="container-fluid px-5">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <h5 class="text-huit-light fw-bold mb-4 border-start border-huit ps-2 border-4">HUIT STATIONERY</h5>
-                <p class="small opacity-75">Hệ thống cung cấp văn phòng phẩm hàng đầu cho sinh viên HUIT. Chất lượng, nhanh chóng và tận tâm.</p>
+<!-- Footer -->
+<footer class="bg-slate-900 text-slate-300 pt-16 pb-10 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+            <div class="space-y-6">
+                <a th:href="@{/home}" class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                        <i data-lucide="pen-tool" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-white">Văn Phòng Phẩm Online</span>
+                </a>
+                <p class="text-slate-400 leading-relaxed text-sm">
+                    Nâng tầm trải nghiệm học tập và làm việc với những sản phẩm văn phòng phẩm tinh tế, chất lượng hàng đầu.
+                </p>
+                <div class="flex gap-4">
+                    <a href="https://facebook.com" target="_blank" class="w-9 h-9 border border-slate-700 rounded-full flex items-center justify-center hover:bg-primary hover:border-primary text-slate-300 hover:text-white transition-all">
+                        <svg class="w-4 h-4 text-slate-200 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" class="w-9 h-9 border border-slate-700 rounded-full flex items-center justify-center hover:bg-primary hover:border-primary text-slate-300 hover:text-white transition-all">
+                        <svg class="w-4 h-4 text-slate-200 stroke-current" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <h6 class="fw-bold mb-4">LIÊN HỆ</h6>
-                <ul class="list-unstyled small opacity-75">
-                    <li class="mb-2"><i class="fa-solid fa-location-dot me-2"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</li>
-                    <li class="mb-2"><i class="fa-solid fa-phone me-2"></i> 0961464045</li>
-                    <li><i class="fa-solid fa-envelope me-2"></i> contact@huit-stationery.com</li>
+            <div>
+                <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-wider">Danh mục hot</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a th:href="@{/san-pham/tim-kiem(danhMuc=1)}" class="hover:text-primary transition-colors">Bút viết các loại</a></li>
+                    <li><a th:href="@{/san-pham/tim-kiem(danhMuc=2)}" class="hover:text-primary transition-colors">Tập vở học sinh</a></li>
+                    <li><a th:href="@{/san-pham/tim-kiem(danhMuc=3)}" class="hover:text-primary transition-colors">Dụng cụ học tập</a></li>
+                    <li><a th:href="@{/san-pham/tim-kiem(danhMuc=5)}" class="hover:text-primary transition-colors">Balo học sinh</a></li>
                 </ul>
             </div>
-            <div class="col-md-4">
-                <h6 class="fw-bold mb-4">THEO DÕI CHÚNG TÔI</h6>
-                <div class="d-flex gap-3 fs-4">
-                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="#" class="text-light opacity-75 hover-opacity-100"><i class="fa-brands fa-youtube"></i></a>
+            <div>
+                <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-wider">Hỗ trợ</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a th:href="@{/gioi-thieu}" class="hover:text-primary transition-colors">Về chúng tôi</a></li>
+                    <li><a th:href="@{/lien-he}" class="hover:text-primary transition-colors">Liên hệ hỗ trợ</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Đổi trả & hoàn tiền</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-wider">Bản tin của chúng tôi</h4>
+                <p class="text-slate-400 mb-4 text-sm">Đăng ký email để nhận ưu đãi hot mới nhất từ chúng tôi.</p>
+                <div class="relative">
+                    <input type="email" placeholder="Email của bạn" class="w-full pl-4 pr-12 py-3 bg-slate-800 border-none rounded-xl text-sm text-slate-200 focus:ring-2 focus:ring-primary outline-none">
+                    <button class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
         </div>
-        <hr class="mt-5 opacity-25">
-        <p class="text-center small opacity-50 mb-0">© 2026 Designed by Thành Viên 1 - Nhóm Đồ án HUIT</p>
+        <div class="pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
+            <p>&copy; 2026 Văn Phòng Phẩm Online. Phát triển cho đồ án Java Web.</p>
+        </div>
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    lucide.createIcons();
+
+    // AJAX load cart count
+    function updateHeaderCartCount() {
+        fetch('/cart/info')
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.getElementById('cart-badge-count');
+                if (badge) {
+                    badge.textContent = data.cartCount || 0;
+                }
+            })
+            .catch(() => {});
+    }
+    document.addEventListener('DOMContentLoaded', updateHeaderCartCount);
+
+    // Global Toast Notification Helper
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg transition-all duration-300 translate-x-20 opacity-0 ${
+            type === 'success' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'
+        }`;
+
+        const icon = document.createElement('i');
+        icon.setAttribute('data-lucide', type === 'success' ? 'check-circle' : 'alert-circle');
+        icon.className = 'w-5 h-5 flex-shrink-0';
+        
+        const text = document.createElement('span');
+        text.className = 'text-xs font-bold';
+        text.textContent = message;
+
+        toast.appendChild(icon);
+        toast.appendChild(text);
+        container.appendChild(toast);
+
+        lucide.createIcons();
+
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('translate-x-20', 'opacity-0');
+        }, 50);
+
+        // Animate out and remove
+        setTimeout(() => {
+            toast.classList.add('translate-x-20', 'opacity-0');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    // Toggle user dropdown menu
+    document.addEventListener('DOMContentLoaded', () => {
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        const userMenuDropdown = document.getElementById('user-menu-dropdown');
+        
+        if (userMenuBtn && userMenuDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userMenuDropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userMenuDropdown.contains(e.target) && !userMenuBtn.contains(e.target)) {
+                    userMenuDropdown.classList.add('hidden');
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Giới thiệu', ~{::div#about-content})}">
+<body>
+<div id="about-content">
+    <!-- Hero Section -->
+    <section class="py-20 bg-white border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+            <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                Về <span class="text-primary">Văn Phòng Phẩm Online</span>
+            </h1>
+            <p class="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                Chúng tôi là đơn vị cung cấp văn phòng phẩm hàng đầu cho sinh viên và giảng viên tại HUIT.
+                Sứ mệnh của chúng tôi là mang đến những công cụ sáng tạo chất lượng nhất để nâng tầm trải nghiệm học tập.
+            </p>
+            <div class="flex justify-center gap-12 pt-8">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-primary">5+</div>
+                    <div class="text-slate-500 font-medium">Năm kinh nghiệm</div>
+                </div>
+                <div class="w-px h-12 bg-slate-200"></div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-primary">10k+</div>
+                    <div class="text-slate-500 font-medium">Khách hàng</div>
+                </div>
+                <div class="w-px h-12 bg-slate-200"></div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-primary">500+</div>
+                    <div class="text-slate-500 font-medium">Sản phẩm</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 space-y-4">
+            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Đội ngũ phát triển</h2>
+            <p class="text-slate-500 text-lg">Những con người tâm huyết đứng sau dự án Văn Phòng Phẩm Online</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+            <!-- Team Member 1 -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 p-8 text-center group">
+                <div class="relative w-32 h-32 mx-auto mb-6">
+                    <div class="absolute inset-0 bg-primary rounded-full scale-110 opacity-0 group-hover:opacity-10 transition-all duration-500"></div>
+                    <img th:src="@{/images/tien_profile.jpg}" src="/images/tien_profile.jpg" alt="Bùi Quang Tiến" class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-1">Bùi Quang Tiến</h3>
+                <p class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Người 3 - Quản trị & Logic</p>
+                <p class="text-slate-500 leading-relaxed">
+                    Chuyên gia phụ trách logic giỏ hàng, đặt hàng và xây dựng phân hệ Admin Panel quản trị vận hành.
+                </p>
+                <div class="flex justify-center gap-4 mt-6 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+
+            <!-- Team Member 2 -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 p-8 text-center group">
+                <div class="relative w-32 h-32 mx-auto mb-6">
+                    <div class="absolute inset-0 bg-primary rounded-full scale-110 opacity-0 group-hover:opacity-10 transition-all duration-500"></div>
+                    <img th:src="@{/images/luong_profile.jpg}" src="/images/luong_profile.jpg" alt="Lê Đức Lương" class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-1">Lê Đức Lương</h3>
+                <p class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Người 1 - Nhóm trưởng - Backend & CSDL</p>
+                <p class="text-slate-500 leading-relaxed">
+                    Nhóm trưởng phụ trách thiết kế CSDL, cấu hình Spring Security bảo mật, trang Checkout và thanh toán QR.
+                </p>
+                <div class="flex justify-center gap-4 mt-6 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="globe" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+
+            <!-- Team Member 3 -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 p-8 text-center group">
+                <div class="relative w-32 h-32 mx-auto mb-6">
+                    <div class="absolute inset-0 bg-primary rounded-full scale-110 opacity-0 group-hover:opacity-10 transition-all duration-500"></div>
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" alt="Trần Nguyễn Phú Hoàng" class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-1">Trần Nguyễn Phú Hoàng</h3>
+                <p class="text-primary font-bold text-sm uppercase tracking-wider mb-4">Người 2 - Front-end & UI/UX</p>
+                <p class="text-slate-500 leading-relaxed">
+                    Chuyên gia thiết kế giao diện UI/UX mượt mà, tối ưu hóa các trang sản phẩm, tìm kiếm và tương thích di động.
+                </p>
+                <div class="flex justify-center gap-4 mt-6 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="database" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors"><i data-lucide="mail" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
