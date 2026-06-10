@@ -92,18 +92,10 @@ public class DonHangService {
 
     // Kiểm tra người dùng đã mua sản phẩm này và đơn hàng đã hoàn thành chưa
     public boolean hasUserPurchasedProduct(NguoiDung user, Integer productId) {
-        List<DonHang> orders = donHangRepository.findByNguoiDung(user);
-        for (DonHang order : orders) {
-            if ("Hoàn thành".equalsIgnoreCase(order.getTrang_thai())) {
-                List<ChiTietDonHang> details = chiTietRepository.findByDonHangId_donhang(order.getId_donhang());
-                for (ChiTietDonHang detail : details) {
-                    if (detail.getSanPham().getId_sanpham().equals(productId)) {
-                        return true;
-                    }
-                }
-            }
+        if (user == null || user.getId_nguoidung() == null || productId == null) {
+            return false;
         }
-        return false;
+        return chiTietRepository.countCompletedPurchasesByUserAndProduct(user.getId_nguoidung(), productId) > 0;
     }
 
     // Tính tổng doanh thu của người dùng
