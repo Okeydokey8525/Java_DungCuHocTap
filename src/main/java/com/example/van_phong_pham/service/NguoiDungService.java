@@ -3,6 +3,7 @@ package com.example.van_phong_pham.service;
 import com.example.van_phong_pham.model.NguoiDung;
 import com.example.van_phong_pham.repository.NguoiDungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class NguoiDungService {
     private NguoiDungRepository nguoiDungRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     // Tìm người dùng theo email (Dùng cho logic Đăng nhập)
     public NguoiDung findByEmail(String email) {

@@ -14,13 +14,16 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final org.springframework.context.ApplicationContext applicationContext;
+
+    public WebSecurityConfig(org.springframework.context.ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -50,7 +53,7 @@ public class WebSecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
+                                .userService(applicationContext.getBean(CustomOAuth2UserService.class))
                         )
                         .defaultSuccessUrl("/home", true)
                         .failureUrl("/login?error=true")

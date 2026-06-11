@@ -4,6 +4,7 @@ import com.example.van_phong_pham.model.DanhMuc;
 import com.example.van_phong_pham.model.SanPham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,11 +44,18 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     @Query("SELECT sp FROM SanPham sp WHERE sp.trang_thai = true")
     List<SanPham> findByTrang_thaiTrue();
 
+    // Override findAll to use EntityGraph and prevent N+1 queries
+    @EntityGraph(attributePaths = {"danhMuc"})
+    @Override
+    List<SanPham> findAll();
+
     // Products on sale
+    @EntityGraph(attributePaths = {"danhMuc"})
     @Query("SELECT sp FROM SanPham sp WHERE sp.gia_giam IS NOT NULL")
     List<SanPham> findByGia_giamIsNotNull();
 
     // Multi-filter search with JPQL
+    @EntityGraph(attributePaths = {"danhMuc"})
     @Query("SELECT sp FROM SanPham sp WHERE " +
            "(:keyword IS NULL OR sp.ten_sanpham LIKE CONCAT('%', :keyword, '%')) AND " +
            "(:danhMucId IS NULL OR sp.danhMuc.id_danhmuc = :danhMucId) AND " +
