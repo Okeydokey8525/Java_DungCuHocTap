@@ -1,0 +1,3 @@
+## 2026-06-13 - Avoid N+1 queries in service logic by using EXISTS
+**Learning:** Checking complex object conditions (e.g. User has Orders, Orders have OrderDetails, OrderDetail contains a specific Product) using application-level loops results in N+1 queries and high memory overhead because it needs to load large un-needed relationship structures into memory.
+**Action:** Replace `for` loops in services that iterate through nested objects to check conditions with highly efficient JPQL `@Query` using `EXISTS` (or `CASE WHEN COUNT > 0`) conditions inside the corresponding Spring Data Repositories.
