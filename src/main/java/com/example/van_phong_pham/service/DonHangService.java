@@ -92,18 +92,9 @@ public class DonHangService {
 
     // Kiểm tra người dùng đã mua sản phẩm này và đơn hàng đã hoàn thành chưa
     public boolean hasUserPurchasedProduct(NguoiDung user, Integer productId) {
-        List<DonHang> orders = donHangRepository.findByNguoiDung(user);
-        for (DonHang order : orders) {
-            if ("Hoàn thành".equalsIgnoreCase(order.getTrang_thai())) {
-                List<ChiTietDonHang> details = chiTietRepository.findByDonHangId_donhang(order.getId_donhang());
-                for (ChiTietDonHang detail : details) {
-                    if (detail.getSanPham().getId_sanpham().equals(productId)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        // Tối ưu hóa: Thay vì N+1 query (Lấy danh sách đơn hàng -> với mỗi đơn hàng lấy chi tiết),
+        // sử dụng 1 query duy nhất trong database để kiểm tra.
+        return chiTietRepository.existsByUserAndProductAndStatusCompleted(user, productId);
     }
 
     // Tính tổng doanh thu của người dùng
