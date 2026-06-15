@@ -1,6 +1,7 @@
 package com.example.van_phong_pham.repository;
 
 import com.example.van_phong_pham.model.ChiTietDonHang;
+import com.example.van_phong_pham.model.NguoiDung;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,13 @@ public interface ChiTietDonHangRepository extends JpaRepository<ChiTietDonHang, 
     // Lấy chi tiết đơn hàng theo ID đơn hàng và ID sản phẩm
     @Query("SELECT ct FROM ChiTietDonHang ct WHERE ct.donHang.id_donhang = :id_donhang AND ct.sanPham.id_sanpham = :id_sanpham")
     ChiTietDonHang findByDonHangId_donhangAndSanPhamId_sanpham(@Param("id_donhang") Integer id_donhang, @Param("id_sanpham") Integer id_sanpham);
+
+    // ⚡ Bolt Performance Optimization:
+    // This replaces an N+1 query loop in DonHangService with a single native DB check
+    // Returns true if there's any completed order for this user containing this product
+    @Query("SELECT CASE WHEN COUNT(ct) > 0 THEN true ELSE false END FROM ChiTietDonHang ct " +
+           "WHERE ct.donHang.nguoiDung = :nguoiDung " +
+           "AND ct.sanPham.id_sanpham = :productId " +
+           "AND ct.donHang.trang_thai = 'Hoàn thành'")
+    boolean existsByNguoiDungAndSanPhamAndTrangThaiHoanThanh(@Param("nguoiDung") NguoiDung nguoiDung, @Param("productId") Integer productId);
 }

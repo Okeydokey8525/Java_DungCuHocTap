@@ -1,0 +1,3 @@
+## 2024-06-15 - Fixed N+1 Query in Order Checking
+**Learning:** Found an N+1 query issue in `hasUserPurchasedProduct` where it fetched all user orders, then in a loop fetched details for every completed order to verify if a user had purchased a product before they could review it. This logic loaded entities unnecessarily into memory and spammed the database.
+**Action:** Replaced the in-memory iteration with a single JPQL DB-native check `existsByNguoiDungAndSanPhamAndTrangThaiHoanThanh` leveraging `CASE WHEN COUNT(ct) > 0`. Next time, look for boolean checks happening inside nested `for` loops across entities and move the verification directly to JPA level using JPQL.
