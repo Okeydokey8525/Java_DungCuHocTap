@@ -80,6 +80,18 @@ public class SanPhamService {
         return sanPhamRepository.findByGia_giamIsNotNull();
     }
 
+    // Get recent active products
+    public List<SanPham> getRecentActiveProducts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("ngayTao").descending());
+        return sanPhamRepository.findByTrang_thaiTrue(pageable).getContent();
+    }
+
+    // Get recent sale products
+    public List<SanPham> getRecentSaleProducts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("ngayTao").descending());
+        return sanPhamRepository.findByGia_giamIsNotNullAndTrang_thaiTrue(pageable).getContent();
+    }
+
     public long countProducts() {
         return sanPhamRepository.count();
     }

@@ -32,9 +32,9 @@ public class HomeController {
 
     @GetMapping({"/", "/home"})
     public String index(Model model) {
-        model.addAttribute("listSanPham", sanPhamService.getAllProducts());
+        model.addAttribute("listSanPham", sanPhamService.getRecentActiveProducts(8));
         model.addAttribute("listDanhMuc", danhMucService.getAllCategories());
-        model.addAttribute("saleProducts", sanPhamService.getSaleProducts());
+        model.addAttribute("saleProducts", sanPhamService.getRecentSaleProducts(4));
         return "home";
     }
 

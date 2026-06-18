@@ -4,6 +4,7 @@ import com.example.van_phong_pham.model.DanhMuc;
 import com.example.van_phong_pham.model.SanPham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -71,6 +72,12 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     long countByTrang_thaiTrue();
 
     // Pageable findAll for active products
+    @EntityGraph(attributePaths = {"danhMuc"})
     @Query("SELECT sp FROM SanPham sp WHERE sp.trang_thai = true")
     Page<SanPham> findByTrang_thaiTrue(Pageable pageable);
+
+    // Pageable findAll for active sale products
+    @EntityGraph(attributePaths = {"danhMuc"})
+    @Query("SELECT sp FROM SanPham sp WHERE sp.trang_thai = true AND sp.gia_giam IS NOT NULL")
+    Page<SanPham> findByGia_giamIsNotNullAndTrang_thaiTrue(Pageable pageable);
 }
