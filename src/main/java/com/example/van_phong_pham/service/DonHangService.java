@@ -91,19 +91,11 @@ public class DonHangService {
     }
 
     // Kiểm tra người dùng đã mua sản phẩm này và đơn hàng đã hoàn thành chưa
+    // ⚡ Bolt Performance Optimization:
+    // Delegates to the database to perform O(1) existence check rather than
+    // loading all user orders and order details into memory in an O(n^2) loop.
     public boolean hasUserPurchasedProduct(NguoiDung user, Integer productId) {
-        List<DonHang> orders = donHangRepository.findByNguoiDung(user);
-        for (DonHang order : orders) {
-            if ("Hoàn thành".equalsIgnoreCase(order.getTrang_thai())) {
-                List<ChiTietDonHang> details = chiTietRepository.findByDonHangId_donhang(order.getId_donhang());
-                for (ChiTietDonHang detail : details) {
-                    if (detail.getSanPham().getId_sanpham().equals(productId)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return chiTietRepository.existsByDonHangNguoiDungAndTrangThaiAndSanPhamId(user, productId);
     }
 
     // Tính tổng doanh thu của người dùng
