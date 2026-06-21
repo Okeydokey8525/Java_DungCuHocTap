@@ -92,18 +92,13 @@ public class DonHangService {
 
     // Kiểm tra người dùng đã mua sản phẩm này và đơn hàng đã hoàn thành chưa
     public boolean hasUserPurchasedProduct(NguoiDung user, Integer productId) {
-        List<DonHang> orders = donHangRepository.findByNguoiDung(user);
-        for (DonHang order : orders) {
-            if ("Hoàn thành".equalsIgnoreCase(order.getTrang_thai())) {
-                List<ChiTietDonHang> details = chiTietRepository.findByDonHangId_donhang(order.getId_donhang());
-                for (ChiTietDonHang detail : details) {
-                    if (detail.getSanPham().getId_sanpham().equals(productId)) {
-                        return true;
-                    }
-                }
-            }
+        // ⚡ Bolt Performance Optimization:
+        // Replaced O(N) queries and O(N*M) memory loading (N+1 anti-pattern)
+        // with a single DB-side EXISTS query to verify if the user purchased the product.
+        if (user == null || user.getId_nguoidung() == null) {
+            return false;
         }
-        return false;
+        return chiTietRepository.existsByUserIdAndProductIdAndTrangThaiHoanThanh(user.getId_nguoidung(), productId);
     }
 
     // Tính tổng doanh thu của người dùng

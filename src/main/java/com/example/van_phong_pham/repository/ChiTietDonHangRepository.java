@@ -24,4 +24,8 @@ public interface ChiTietDonHangRepository extends JpaRepository<ChiTietDonHang, 
     // Lấy chi tiết đơn hàng theo ID đơn hàng và ID sản phẩm
     @Query("SELECT ct FROM ChiTietDonHang ct WHERE ct.donHang.id_donhang = :id_donhang AND ct.sanPham.id_sanpham = :id_sanpham")
     ChiTietDonHang findByDonHangId_donhangAndSanPhamId_sanpham(@Param("id_donhang") Integer id_donhang, @Param("id_sanpham") Integer id_sanpham);
+
+    // Kiểm tra xem người dùng đã mua sản phẩm và đơn hàng đã hoàn thành chưa (Performance optimization)
+    @Query("SELECT COUNT(ct) > 0 FROM ChiTietDonHang ct WHERE ct.donHang.nguoiDung.id_nguoidung = :userId AND ct.sanPham.id_sanpham = :productId AND ct.donHang.trang_thai = 'Hoàn thành'")
+    boolean existsByUserIdAndProductIdAndTrangThaiHoanThanh(@Param("userId") Integer userId, @Param("productId") Integer productId);
 }
