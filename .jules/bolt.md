@@ -1,0 +1,3 @@
+## 2024-06-25 - [N+1 Query & In-Memory Filtering Anti-Pattern]
+**Learning:** Discovered a major performance bottleneck in `DonHangService.hasUserPurchasedProduct` where it fetches all orders for a user, then iterates over completed orders to query `ChiTietDonHang` for each one (N+1 queries), filtering for a matching product in memory. This degrades linearly with order volume.
+**Action:** Replaced manual loops and N+1 queries with a single JPQL `EXISTS`/`COUNT` query. Always delegate existence checks across related entities directly to the database instead of loading full entity graphs into memory.

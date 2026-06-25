@@ -92,18 +92,9 @@ public class DonHangService {
 
     // Kiểm tra người dùng đã mua sản phẩm này và đơn hàng đã hoàn thành chưa
     public boolean hasUserPurchasedProduct(NguoiDung user, Integer productId) {
-        List<DonHang> orders = donHangRepository.findByNguoiDung(user);
-        for (DonHang order : orders) {
-            if ("Hoàn thành".equalsIgnoreCase(order.getTrang_thai())) {
-                List<ChiTietDonHang> details = chiTietRepository.findByDonHangId_donhang(order.getId_donhang());
-                for (ChiTietDonHang detail : details) {
-                    if (detail.getSanPham().getId_sanpham().equals(productId)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        // Bolt ⚡ Optimization: Replaced O(N) loop + N+1 DB queries with a single database count query
+        // This pushes filtering to the DB which is much faster than loading and iterating through entity graphs.
+        return donHangRepository.countCompletedOrdersWithProduct(user, productId) > 0;
     }
 
     // Tính tổng doanh thu của người dùng
