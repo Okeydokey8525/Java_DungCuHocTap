@@ -1,0 +1,3 @@
+## 2024-05-30 - [Fix N+1 and In-Memory Filtering in DonHangService]
+**Learning:** Found a severe codebase anti-pattern in `DonHangService.hasUserPurchasedProduct`. The application was fetching all orders for a user, manually filtering by completed status in a loop, and then fetching order details for each order in another loop to check if a specific product was purchased. This resulted in an N+1 query problem and slow manual in-memory filtering.
+**Action:** Replaced the manual loops and multiple JPA calls with a single `@Query` using `EXISTS` (`COUNT(...) > 0`) in `ChiTietDonHangRepository`. Always prefer delegating data filtering to the database using JPQL `COUNT` or `EXISTS` instead of looping through related collections to check conditions.
