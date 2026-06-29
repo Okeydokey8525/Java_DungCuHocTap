@@ -35,4 +35,8 @@ public interface DonHangRepository extends JpaRepository<DonHang, Integer> {
 
     // 10 đơn hàng gần nhất
     List<DonHang> findTop10ByOrderByNgayDatDesc();
+
+    // Kiểm tra người dùng đã mua sản phẩm và đơn hàng đã hoàn thành
+    @Query("SELECT CASE WHEN EXISTS (SELECT 1 FROM ChiTietDonHang ct WHERE ct.donHang.nguoiDung = :nguoiDung AND LOWER(ct.donHang.trang_thai) = 'hoàn thành' AND ct.sanPham.id_sanpham = :productId) THEN true ELSE false END")
+    boolean existsCompletedOrderForUserAndProduct(@Param("nguoiDung") NguoiDung nguoiDung, @Param("productId") Integer productId);
 }
