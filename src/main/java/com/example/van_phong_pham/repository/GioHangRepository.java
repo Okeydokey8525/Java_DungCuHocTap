@@ -26,4 +26,8 @@ public interface GioHangRepository extends JpaRepository<GioHang, Integer> {
     
     // Kiểm tra sản phẩm có trong giỏ hàng của người dùng không
     boolean existsByNguoiDungAndSanPham(NguoiDung nguoiDung, SanPham sanPham);
+
+    // Tính tổng tiền giỏ hàng trực tiếp ở DB để tối ưu hiệu suất (Performance optimization)
+    @org.springframework.data.jpa.repository.Query("SELECT SUM(COALESCE(gh.sanPham.gia_giam, gh.sanPham.gia) * gh.so_luong) FROM GioHang gh WHERE gh.nguoiDung = :nguoiDung")
+    Double calculateCartTotal(@org.springframework.data.repository.query.Param("nguoiDung") NguoiDung nguoiDung);
 }

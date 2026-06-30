@@ -109,16 +109,10 @@ public class GioHangService {
 
     // Tính tổng tiền giỏ hàng
     public Double getCartTotal(NguoiDung nguoiDung) {
-        List<GioHang> cartItems = getCartItems(nguoiDung);
-        return cartItems.stream()
-                .mapToDouble(item -> {
-                    Double price = item.getSanPham().getGia();
-                    if (item.getSanPham().getGia_giam() != null) {
-                        price = item.getSanPham().getGia_giam();
-                    }
-                    return price * item.getSo_luong();
-                })
-                .sum();
+        // Optimization: Delegate aggregation to the database instead of in-memory calculation
+        // to avoid loading all cart items and products into application memory.
+        Double total = gioHangRepository.calculateCartTotal(nguoiDung);
+        return total != null ? total : 0.0;
     }
 
     // Kiểm tra sản phẩm có trong giỏ hàng không
