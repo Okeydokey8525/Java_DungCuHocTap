@@ -178,10 +178,12 @@
                             <a th:href="@{/admin/san-pham(editId=${sp.id_sanpham})}" class="p-2 text-slate-400 hover:text-primary transition-colors bg-slate-50 rounded-xl hover:bg-white shadow-sm border border-slate-100">
                                 <i data-lucide="edit-3" class="w-5 h-5"></i>
                             </a>
-                            <a th:href="@{/admin/san-pham/delete(id=${sp.id_sanpham})}" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')"
-                               class="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-xl hover:bg-white shadow-sm border border-slate-100">
-                                <i data-lucide="trash-2" class="w-5 h-5"></i>
-                            </a>
+                            <form th:action="@{/admin/san-pham/delete}" method="post" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
+                                <input type="hidden" name="id" th:value="${sp.id_sanpham}">
+                                <button type="submit" class="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-xl hover:bg-white shadow-sm border border-slate-100 cursor-pointer">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>

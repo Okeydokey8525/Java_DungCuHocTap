@@ -1,0 +1,4 @@
+## 2026-06-30 - Destructive Actions over GET causing CSRF risk
+**Vulnerability:** Found multiple destructive administrative endpoints (e.g., delete product, delete category) exposed via `@GetMapping` instead of `@PostMapping` or `@DeleteMapping`. While CSRF protection was disabled globally, using GET made it trivial to launch Cross-Site Request Forgery (CSRF) attacks via simple `<img>` tags or malicious links.
+**Learning:** State-changing operations should never use HTTP GET. Modern browser policies (like `SameSite=Lax` for cookies) automatically protect POST requests from cross-site submissions, but this protection does not apply to GET requests.
+**Prevention:** Always use `@PostMapping`, `@PutMapping`, or `@DeleteMapping` for state-changing endpoints, and update UI components to use `<form method="POST">` or fetch/XHR requests instead of `<a href="...">` links.
