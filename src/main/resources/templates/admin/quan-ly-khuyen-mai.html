@@ -151,10 +151,12 @@
                                 <a th:href="@{/admin/khuyen-mai(editId=${coupon.id_magiamgia})}" class="p-2 text-slate-400 hover:text-primary transition-colors bg-slate-50 rounded-xl hover:bg-white border border-slate-100 shadow-sm">
                                     <i data-lucide="edit-3" class="w-5 h-5"></i>
                                 </a>
-                                <a th:href="@{/admin/khuyen-mai/delete(id=${coupon.id_magiamgia})}" onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')"
-                                   class="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-xl hover:bg-white border border-slate-100 shadow-sm">
-                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
-                                </a>
+                                <form th:action="@{/admin/khuyen-mai/delete}" method="post" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')">
+                                    <input type="hidden" name="id" th:value="${coupon.id_magiamgia}">
+                                    <button type="submit" class="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-xl hover:bg-white border border-slate-100 shadow-sm cursor-pointer">
+                                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

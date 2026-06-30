@@ -114,7 +114,7 @@ public class AdminController {
         return "redirect:/admin/san-pham";
     }
 
-    @GetMapping("/san-pham/delete")
+    @PostMapping("/san-pham/delete")
     public String deleteSanPham(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
         try {
             SanPham sp = sanPhamService.getProductById(id);
@@ -158,7 +158,7 @@ public class AdminController {
         return "redirect:/admin/danh-muc";
     }
 
-    @GetMapping("/danh-muc/delete")
+    @PostMapping("/danh-muc/delete")
     public String deleteDanhMuc(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
         try {
             danhMucService.delete(id);
@@ -275,7 +275,7 @@ public class AdminController {
         return "redirect:/admin/danh-gia";
     }
 
-    @GetMapping("/danh-gia/delete")
+    @PostMapping("/danh-gia/delete")
     public String deleteDanhGia(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
         try {
             danhGiaService.deleteReview(id);
@@ -338,7 +338,7 @@ public class AdminController {
         return "redirect:/admin/khuyen-mai";
     }
 
-    @GetMapping("/khuyen-mai/delete")
+    @PostMapping("/khuyen-mai/delete")
     public String deleteKhuyenMai(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
         try {
             maGiamGiaService.deleteCoupon(id);

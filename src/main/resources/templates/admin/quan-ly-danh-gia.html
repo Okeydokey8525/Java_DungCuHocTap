@@ -79,10 +79,12 @@
                                th:class="${dg.trang_thai == true ? 'px-2 py-1 bg-amber-500 text-white rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm shadow-amber-500/20' : 'px-2 py-1 bg-green-500 text-white rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm shadow-green-500/20'}"
                                th:text="${dg.trang_thai == true ? 'Ẩn đi' : 'Hiển thị'}">Duyệt</a>
                                
-                            <a th:href="@{/admin/danh-gia/delete(id=${dg.id_danhgia})}" onclick="return confirm('Bạn có chắc chắn muốn xóa đánh giá này?')"
-                               class="p-1.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-lg hover:bg-white border border-slate-100 shadow-sm flex items-center justify-center">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </a>
+                            <form th:action="@{/admin/danh-gia/delete}" method="post" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá này?')">
+                                <input type="hidden" name="id" th:value="${dg.id_danhgia}">
+                                <button type="submit" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 rounded-lg hover:bg-white border border-slate-100 shadow-sm flex items-center justify-center cursor-pointer">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
